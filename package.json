@@ -1,41 +1,8 @@
 {
-  "name": "finanz-dashboard",
+  "name": "konkordia-finanzen",
   "version": "1.0.0",
-  "description": "Finanz Dashboard mit Netlify und Neon",
+  "description": "Finanz Dashboard",
   "dependencies": {
     "@neondatabase/serverless": "^0.9.0"
   }
 }
-```
-
-### 1.3 Netlify Account & Deployment
-
-1. Gehen Sie zu [netlify.com](https://www.netlify.com/)
-2. **Sign up** oder **Log in**
-3. Klicken Sie auf **"Add new site"** → **"Import an existing project"**
-4. Wählen Sie **GitHub** und autorisieren Sie Netlify
-5. Wählen Sie Ihr Repository **`jcdappen/finanz-dashboard`**
-6. Deployment-Einstellungen:
-   - **Build command:** (leer lassen)
-   - **Publish directory:** `.`
-7. Klicken Sie auf **"Deploy site"**
-
----
-
-## 📝 **Schritt 2: Neon Datenbank einrichten**
-
-### 2.1 Neon Account erstellen
-
-1. Gehen Sie zu [neon.tech](https://neon.tech/)
-2. **Sign up** (kostenlos mit GitHub)
-3. Klicken Sie auf **"Create a project"**
-4. Projektname: `finanz-dashboard`
-5. Region: Wählen Sie die nächstgelegene (z.B. Frankfurt)
-6. PostgreSQL Version: Latest
-7. Klicken Sie auf **"Create project"**
-
-### 2.2 Connection String kopieren
-
-Nach der Erstellung sehen Sie eine **Connection String** wie:
-```
-postgresql://username:password@ep-xxx.eu-central-1.aws.neon.tech/neondb?sslmode=require
