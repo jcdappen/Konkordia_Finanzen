@@ -106,12 +106,12 @@
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
-            text-decoration: none;
             margin-top: 15px;
             transition: all 0.3s;
             font-size: 0.95rem;
             cursor: pointer;
             border: none;
+            font-family: inherit;
         }
 
         .info-link:hover {
@@ -261,26 +261,6 @@
             color: #555;
             line-height: 1.6;
             margin: 0;
-        }
-
-        @media (max-width: 768px) {
-            .modal-content {
-                margin: 20px;
-                max-width: calc(100% - 40px);
-            }
-
-            .modal-header {
-                padding: 20px;
-            }
-
-            .modal-header h2 {
-                font-size: 1.4rem;
-                padding-right: 40px;
-            }
-
-            .modal-body {
-                padding: 25px;
-            }
         }
 
         .year-summary {
@@ -563,6 +543,24 @@
             .quarter-title {
                 font-size: 1.5rem;
             }
+
+            .modal-content {
+                margin: 20px;
+                max-width: calc(100% - 40px);
+            }
+
+            .modal-header {
+                padding: 20px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.4rem;
+                padding-right: 40px;
+            }
+
+            .modal-body {
+                padding: 25px;
+            }
         }
     </style>
 </head>
@@ -580,7 +578,7 @@
             <h1>Finanz-Dashboard 2025</h1>
             <p>Quartalsergebnisse und Jahresübersicht</p>
             <p class="disclaimer">Alle angegebenen Zahlen sind vorläufige Werte und können sich durch Nachbuchungen oder Korrekturen ändern.</p>
-            <a href="erklaerung.html" class="info-link">📖 Erklärung der Finanzposten</a>
+            <button onclick="openModal()" class="info-link">📖 Erklärung der Finanzposten</button>
         </div>
 
         <div class="loading" id="loadingIndicator">
@@ -610,12 +608,139 @@
                 <!-- Quartals-Karten werden hier dynamisch eingefügt -->
             </div>
         </div>
+
+        <!-- Modal für Erklärungen -->
+        <div id="explanationModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📖 Erklärung der Finanzposten</h2>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-intro">
+                        <p><strong>Zweck dieser Übersicht:</strong> Diese Übersicht erklärt, welche konkreten Posten sich hinter den Hauptkategorien im Dashboard verbergen. So können Sie nachvollziehen, wie sich die Gesamtsummen zusammensetzen.</p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h3>📈 Einnahmen</h3>
+                        
+                        <div class="modal-category">
+                            <h4>Spenden</h4>
+                            <ul class="modal-list">
+                                <li>Spenden allgemein Ertrag</li>
+                                <li>Spenden Verzicht a. Erstatt. v. Aufwend.</li>
+                            </ul>
+                        </div>
+
+                        <div class="modal-category">
+                            <h4>Mission</h4>
+                            <ul class="modal-list">
+                                <li>Spenden zweckgebunden Mission</li>
+                            </ul>
+                        </div>
+
+                        <div class="modal-category">
+                            <h4>Sonstige Einnahmen</h4>
+                            <ul class="modal-list">
+                                <li>Spenden Komm. Mitarbeiter</li>
+                                <li>Einnahme aus Untervermietung</li>
+                                <li>Medien Einnahmen</li>
+                                <li>FSQ Regio SW Veranstaltungen Einnahmen</li>
+                                <li>Gemeindefreizeit Einnahmen</li>
+                                <li>Zinserträge</li>
+                                <li>Sonstige Erträge</li>
+                                <li>Erträge a. Weiterberech. Verwaltungsaufwand</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="modal-section">
+                        <h3>📉 Ausgaben</h3>
+                        
+                        <div class="modal-category">
+                            <h4>Gebäude</h4>
+                            <ul class="modal-list">
+                                <li>Gebäudemiete</li>
+                                <li>Nebenkosten (Strom, Müll)</li>
+                                <li>Nebenkosten Vermietung 1. OG</li>
+                                <li>Instandhaltung Räume</li>
+                            </ul>
+                        </div>
+
+                        <div class="modal-category">
+                            <h4>Personal</h4>
+                            <ul class="modal-list">
+                                <li>Löhne und Gehälter</li>
+                                <li>Übungsleiter-Freibetrag</li>
+                                <li>Anteil Sozialversicherung</li>
+                                <li>Reise- und Übernachtungskosten</li>
+                                <li>Fortbildungskosten</li>
+                                <li>Sonstige Personalaufwendungen</li>
+                                <li>Honorare Aufwand</li>
+                            </ul>
+                        </div>
+
+                        <div class="modal-category">
+                            <h4>Mission</h4>
+                            <ul class="modal-list">
+                                <li>Missionsprojekte</li>
+                                <li>Missionarische Unterstützung</li>
+                                <li>Zweckgebundene Missionsausgaben</li>
+                            </ul>
+                        </div>
+
+                        <div class="modal-category">
+                            <h4>Sonstige Ausgaben</h4>
+                            <ul class="modal-list">
+                                <li>Kinder- u. Jugendarbeit allgem. Aufwand</li>
+                                <li>Jugend-Veranstaltungen Ausgaben</li>
+                                <li>Evangelisation</li>
+                                <li>Allgemeine Bürokosten</li>
+                                <li>Porto</li>
+                                <li>Telefon</li>
+                                <li>Fachliteratur</li>
+                                <li>Abos</li>
+                                <li>Druckaufträge/Flyer</li>
+                                <li>Fahrtkosten MA intern</li>
+                                <li>Reinigung, Verbrauchsmaterial</li>
+                                <li>Getränke-Lebensmittel-Gastfreundschaft</li>
+                                <li>Bewirtungskosten</li>
+                                <li>Bastel-/Dekomaterial</li>
+                                <li>Geschenke</li>
+                                <li>Fahrtkosten extern (von Besuchern)</li>
+                                <li>EDV-Kosten</li>
+                                <li>Werbung / PR</li>
+                                <li>Anschaffungen</li>
+                                <li>Reparaturen/Instandhaltung</li>
+                                <li>Technik/Video</li>
+                                <li>Periodenfremde Aufwendungen</li>
+                                <li>Versicherungen</li>
+                                <li>Abgaben an foursquare</li>
+                                <li>Gebühren</li>
+                                <li>Medien Ausgaben</li>
+                                <li>FSQ Regio SW Veranstaltungen Ausgaben</li>
+                                <li>Gemeindefreizeit Ausgaben</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="modal-section">
+                        <h3>ℹ️ Zusammenfassung</h3>
+                        <div class="modal-intro">
+                            <p style="margin-bottom: 10px;"><strong>Einnahmen:</strong> Alle Einnahmen werden in die drei Hauptkategorien Spenden, Mission und Sonstige gruppiert.</p>
+                            <p style="margin-bottom: 10px;"><strong>Ausgaben:</strong> Alle Ausgaben werden in die vier Hauptkategorien Gebäude, Personal, Mission und Sonstige gruppiert.</p>
+                            <p><strong>Dashboard-Ansicht:</strong> Im Dashboard sehen Sie nur die Summen dieser Hauptkategorien, um eine übersichtliche Darstellung zu gewährleisten.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         const CONFIG = {
             password: "Konkordia2025",
-            apiBaseUrl: "/api" // Netlify Functions
+            apiBaseUrl: "/api"
         };
 
         let quarterData = [];
@@ -634,7 +759,6 @@
             }
         }
 
-        // Enter-Taste für Login
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 login();
@@ -741,185 +865,3 @@
                                             <div class="goal-amount">${formatCurrency(quartalsziele.visionsbetrag)} Vision</div>
                                         </div>
                                         <span class="goal-status ${visionGoalAchieved ? 'achieved' : 'not-achieved'}">
-                                            ${visionGoalAchieved ? '✓ Erreicht' : '✗ Nicht erreicht'}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-back">
-                            <button class="back-btn" onclick="event.stopPropagation(); toggleCard(${i})">← Zurück zur Übersicht</button>
-                            <div class="quarter-header">
-                                <div class="quarter-title">${quarterNames[i]} - Detailansicht</div>
-                                <div class="quarter-period">${periodText}</div>
-                            </div>
-                            
-                            <div class="details-section">
-                                <h4>Erträge (Einnahmen)</h4>
-                                <table class="details-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Kategorie</th>
-                                            <th>Aktuelles Jahr</th>
-                                            <th>Vorjahr</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Spenden</td>
-                                            <td style="color: #27ae60; font-weight: 500;">${formatCurrency(quarter.spenden_aktuell)}</td>
-                                            <td>${formatCurrency(quarter.spenden_vorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Mission</td>
-                                            <td style="color: #27ae60; font-weight: 500;">${formatCurrency(quarter.mission_einnahmen_aktuell)}</td>
-                                            <td>${formatCurrency(quarter.mission_einnahmen_vorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Sonstige</td>
-                                            <td style="color: #27ae60; font-weight: 500;">${formatCurrency(quarter.sonstige_einnahmen_aktuell)}</td>
-                                            <td>${formatCurrency(quarter.sonstige_einnahmen_vorjahr)}</td>
-                                        </tr>
-                                        <tr class="total-row">
-                                            <td>Gesamt Erträge</td>
-                                            <td style="color: #27ae60;">${formatCurrency(quarter.gesamt_einnahmen_aktuell)}</td>
-                                            <td style="color: #27ae60;">${formatCurrency(quarter.gesamt_einnahmen_vorjahr)}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="details-section">
-                                <h4>Aufwendungen (Ausgaben)</h4>
-                                <table class="details-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Kategorie</th>
-                                            <th>Aktuelles Jahr</th>
-                                            <th>Vorjahr</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Gebäude</td>
-                                            <td style="color: #e74c3c; font-weight: 500;">${formatCurrency(quarter.gebaeude_aktuell)}</td>
-                                            <td>${formatCurrency(quarter.gebaeude_vorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Personal</td>
-                                            <td style="color: #e74c3c; font-weight: 500;">${formatCurrency(quarter.personal_aktuell)}</td>
-                                            <td>${formatCurrency(quarter.personal_vorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Sonstige</td>
-                                            <td style="color: #e74c3c; font-weight: 500;">${formatCurrency(quarter.sonstige_ausgaben_aktuell)}</td>
-                                            <td>${formatCurrency(quarter.sonstige_ausgaben_vorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Mission</td>
-                                            <td style="color: #e74c3c; font-weight: 500;">${formatCurrency(quarter.mission_ausgaben_aktuell)}</td>
-                                            <td>${formatCurrency(quarter.mission_ausgaben_vorjahr)}</td>
-                                        </tr>
-                                        <tr class="total-row">
-                                            <td>Gesamt Aufwendungen</td>
-                                            <td style="color: #e74c3c;">${formatCurrency(quarter.gesamt_ausgaben_aktuell)}</td>
-                                            <td style="color: #e74c3c;">${formatCurrency(quarter.gesamt_ausgaben_vorjahr)}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="details-section">
-                                <h4>Kontostände</h4>
-                                <table class="details-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Beschreibung</th>
-                                            <th>Aktuelles Jahr</th>
-                                            <th>Vorjahr</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="total-row">
-                                            <td>Kontostand am Quartalsende</td>
-                                            <td style="color: ${quarter.kontostand_aktuell >= 0 ? '#27ae60' : '#e74c3c'}; font-weight: bold;">${formatCurrency(quarter.kontostand_aktuell)}</td>
-                                            <td style="color: ${quarter.kontostand_vorjahr >= 0 ? '#27ae60' : '#e74c3c'};">${formatCurrency(quarter.kontostand_vorjahr)}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            ${quarter.regelmaessig_prozent ? `
-                            <div class="details-section">
-                                <h4>Spenderverhalten</h4>
-                                <table class="details-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Typ</th>
-                                            <th colspan="2">Anteil</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Regelmäßige Spender</td>
-                                            <td colspan="2" style="text-align: right;">${quarter.regelmaessig_prozent}%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Unregelmäßige Spender</td>
-                                            <td colspan="2" style="text-align: right;">${quarter.unregelmaessig_prozent}%</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            ` : ''}
-                        </div>
-                    `;
-                } else {
-                    card.innerHTML = `
-                        <div class="card-front">
-                            <div class="quarter-header">
-                                <div class="quarter-title">${quarterNames[i]}</div>
-                                <div class="quarter-period">Noch nicht verfügbar</div>
-                            </div>
-                            <div class="quarter-overview">
-                                <div class="quarter-result" style="color: #999;">
-                                    Daten ausstehend
-                                </div>
-                                <div class="goals">
-                                    <div class="goal">
-                                        <div>
-                                            <div class="goal-label">Quartalsbedarf</div>
-                                            <div class="goal-amount">${formatCurrency(quartalsziele.quartalsbedarf)} benötigt</div>
-                                        </div>
-                                        <span class="goal-status" style="color: #999;">Ausstehend</span>
-                                    </div>
-                                    <div class="goal">
-                                        <div>
-                                            <div class="goal-label">Vision</div>
-                                            <div class="goal-amount">${formatCurrency(quartalsziele.visionsbetrag)} Vision</div>
-                                        </div>
-                                        <span class="goal-status" style="color: #999;">Ausstehend</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    card.style.opacity = '0.5';
-                    card.style.cursor = 'default';
-                }
-
-                container.appendChild(card);
-            }
-        }
-
-        function toggleCard(index) {
-            const cards = document.querySelectorAll('.quarter-card');
-            const card = cards[index];
-            const quarter = quarterData.find(q => q.quartal === index + 1);
-            if (quarter) {
-                card.classList.toggle('detailed');
-            }
-        }
-    </script>
-</body>
-</html>
