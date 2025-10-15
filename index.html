@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanz-Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667292 0%, #2c3e50 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-form h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #667292;
+            box-shadow: 0 0 0 3px rgba(102, 114, 146, 0.2);
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 15px;
+            background: #667292;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-form button:hover {
+            background: #5a6580;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 114, 146, 0.3);
+        }
+
+        .dashboard {
+            display: none;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header .disclaimer {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        .year-summary {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .year-summary h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f8f9fa;
+        }
+
+        .summary-item.highlight {
+            background: linear-gradient(135deg, #667292 0%, #2c3e50 100%);
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(102, 114, 146, 0.3);
+        }
+
+        .summary-item.highlight h3 {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .summary-item h3 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-item .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .positive { color: #27ae60; }
+        .negative { color: #e74c3c; }
+
+        .quarters-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .quarter-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+
+        .quarter-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card-front, .card-back {
+            padding: 30px;
+            min-height: 150px;
+        }
+
+        .card-back {
+            display: none;
+        }
+
+        .quarter-card.detailed .card-front {
+            display: none;
+        }
+
+        .quarter-card.detailed .card-back {
+            display: block;
+        }
+
+        .quarter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .quarter-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .quarter-period {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .quarter-overview {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .quarter-result {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .goals {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .goal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid transparent;
+        }
+
+        .goal.achieved {
+            border-left-color: #27ae60;
+            background: #e8f5e8;
+        }
+
+        .goal.not-achieved {
+            border-left-color: #e74c3c;
+            background: #fdf2f2;
+        }
+
+        .goal-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .goal-amount {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .goal-status {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .achieved { color: #27ae60; }
+        .not-achieved { color: #e74c3c; }
+
+        .details-section {
+            margin-bottom: 40px;
+        }
+
+        .details-section h4 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .details-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .details-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.95rem;
+        }
+
+        .details-table th:nth-child(2),
+        .details-table th:nth-child(3),
+        .details-table td:nth-child(2),
+        .details-table td:nth-child(3) {
+            text-align: right !important;
+        }
+
+        .details-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .details-table .total-row {
+            background-color: #e9ecef;
+            font-weight: bold;
+            border-top: 2px solid #dee2e6;
+        }
+
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 40px;
+        }
+
+        .back-btn {
+            background: #667292;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a6580;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 114, 146, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .quarter-overview {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .quarter-result {
+                font-size: 2.5rem;
+            }
+            
+            .details-table th,
+            .details-table td {
+                padding: 10px 8px;
+                font-size: 0.85rem;
+            }
+            
+            .quarter-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .quarter-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <div class="login-form">
+            <h1>Finanz-Dashboard</h1>
+            <input type="password" id="passwordInput" placeholder="Passwort eingeben" />
+            <button onclick="login()">Anmelden</button>
+        </div>
+    </div>
+
+    <div class="dashboard" id="dashboard">
+        <div class="header">
+            <h1>Finanz-Dashboard 2025</h1>
+            <p>Quartalsergebnisse und Jahresübersicht</p>
+            <p class="disclaimer">Alle angegebenen Zahlen sind vorläufige Werte und können sich durch Nachbuchungen oder Korrekturen ändern.</p>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+            Lade Daten aus der Datenbank...
+        </div>
+
+        <div id="contentContainer" style="display: none;">
+            <div class="year-summary">
+                <h2>Jahresübersicht 2025</h2>
+                <div class="summary-grid">
+                    <div class="summary-item highlight">
+                        <h3>Kumuliertes Ergebnis</h3>
+                        <div class="value" id="yearResult">-</div>
+                    </div>
+                    <div class="summary-item">
+                        <h3>Gesamteinnahmen</h3>
+                        <div class="value positive" id="yearIncome">-</div>
+                    </div>
+                    <div class="summary-item">
+                        <h3>Gesamtausgaben</h3>
+                        <div class="value negative" id="yearExpenses">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quarters-container" id="quartersContainer">
+                <!-- Quartals-Karten werden hier dynamisch eingefügt -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            password: "Konkordia2025",
+            apiBaseUrl: "/api" // Netlify Functions
+        };
+
+        let quarterData = [];
+        let quartalsziele = {};
+        let isLoggedIn = false;
+
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === CONFIG.password) {
+                isLoggedIn = true;
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadDashboardData();
+            } else {
+                alert('Falsches Passwort!');
+            }
+        }
+
+        // Enter-Taste für Login
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        async function loadDashboardData() {
+            try {
+                document.getElementById('loadingIndicator').style.display = 'block';
+                document.getElementById('contentContainer').style.display = 'none';
+
+                const response = await fetch(`${CONFIG.apiBaseUrl}/get-quarters?jahr=2025`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                quarterData = data.quartale || [];
+                quartalsziele = data.quartalsziele || { quartalsbedarf: 75000, visionsbetrag: 81000 };
+                
+                updateYearSummary(data.jahresuebersicht);
+                renderQuarterCards();
+
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('contentContainer').style.display = 'block';
+
+            } catch (error) {
+                console.error('Fehler beim Laden der Daten:', error);
+                document.getElementById('loadingIndicator').innerHTML = 
+                    '<div class="error">Fehler beim Laden der Daten aus der Datenbank. Bitte versuchen Sie es später erneut.</div>';
+            }
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(amount || 0);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function updateYearSummary(jahresuebersicht) {
+            if (jahresuebersicht) {
+                document.getElementById('yearResult').textContent = formatCurrency(jahresuebersicht.kumuliertes_ergebnis);
+                document.getElementById('yearResult').className = 'value ' + 
+                    (jahresuebersicht.kumuliertes_ergebnis >= 0 ? 'positive' : 'negative');
+                document.getElementById('yearIncome').textContent = formatCurrency(jahresuebersicht.gesamteinnahmen);
+                document.getElementById('yearExpenses').textContent = formatCurrency(jahresuebersicht.gesamtausgaben);
+            } else {
+                document.getElementById('yearResult').textContent = formatCurrency(0);
+                document.getElementById('yearIncome').textContent = formatCurrency(0);
+                document.getElementById('yearExpenses').textContent = formatCurrency(0);
+            }
+        }
+
+        function renderQuarterCards() {
+            const container = document.getElementById('quartersContainer');
+            container.innerHTML = '';
+
+            const quarterNames = ['1. Quartal', '2. Quartal', '3. Quartal', '4. Quartal'];
+
+            for (let i = 0; i < 4; i++) {
+                const quarter = quarterData.find(q => q.quartal === i + 1);
+                const card = document.createElement('div');
+                card.className = 'quarter-card';
+                
+                if (quarter) {
+                    card.onclick = () => toggleCard(i);
+                    
+                    const quarterlyGoalAchieved = quarter.ueberschuss >= quartalsziele.quartalsbedarf;
+                    const visionGoalAchieved = quarter.ueberschuss >= quartalsziele.visionsbetrag;
+                    const periodText = `${formatDate(quarter.period_start)} - ${formatDate(quarter.period_end)}`;
+
+                    card.innerHTML = `
+                        <div class="card-front">
+                            <div class="quarter-header">
+                                <div class="quarter-title">${quarterNames[i]}</div>
+                                <div class="quarter-period">${periodText}</div>
+                            </div>
+                            <div class="quarter-overview">
+                                <div class="quarter-result ${quarter.ueberschuss >= 0 ? 'positive' : 'negative'}">
+                                    ${formatCurrency(quarter.ueberschuss)}
+                                </div>
+                                <div class="goals">
+                                    <div class="goal ${quarterlyGoalAchieved ? 'achieved' : 'not-achieved'}">
+                                        <div>
+                                            <div class="goal-label">Quartalsbedarf erreicht</div>
+                                            <div class="goal-amount">${formatCurrency(quartalsziele.quartalsbedarf)} benötigt</div>
+                                        </div>
+                                        <span class="goal-status ${quarterlyGoalAchieved ? 'achieved' : 'not-achieved'}">
+                                            ${quarterlyGoalAchieved ? '✓ Erreicht' : '✗ Nicht erreicht'}
+                                        </span>
+                                    </div>
+                                    <div class="goal ${visionGoalAchieved ? 'achieved' : 'not-achieved'}">
+                                        <div>
+                                            <div class="goal-label">Vision erreicht</div>
+                                            <div class="goal-amount">${formatCurrency(quartalsziele.visionsbetrag)} Vision</div>
+                                        </div>
+                                        <span class="goal-status ${visionGoalAchieved ? 'achieved' : 'not-achieved'}">
+                                            ${visionGoalAchieved ? '✓ Erreicht' : '✗ Nicht erreicht'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <button class="back-btn" onclick="event.stopPropagation(); toggleCard(${i})">← Zurück zur Übersicht</button>
+                            <div class="quarter-header">
+                                <div class="quarter-title">${quarterNames[i]} - Detailansicht</div>
+                                <div class="quarter-period">${periodText}</div>
+                            </div>
+                            
+                            <div class="details-section">
+                                <h4>Erträge (Einnahmen)</h4>
+                                <table class="details-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kategorie</th>
+                                            <th>Aktuelles Jahr</th>
+                                            <th>Vorjahr</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Spenden</td>
+                                            <td style="color: #27ae60; font-weight: 500;">${formatCurrency(quarter.spenden_aktuell)}</td>
+                                            <td>${formatCurrency(quarter.spenden_vorjahr)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mission</td>
+                                            <td style="color: #27ae60; font-weight: 500;">${formatCurrency(quarter.mission_einnahmen_aktuell)}</td>
+                                            <td>${formatCurrency(quarter.mission_einnahmen_vorjahr)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sonstige</td>
+                                            <td style="color: #27ae60; font-weight: 500;">${formatCurrency(quarter.sonstige_einnahmen_aktuell)}</td>
+                                            <td>${formatCurrency(quarter.sonstige_einnahmen_vorjahr)}</td>
+                                        </tr>
+                                        <tr class="total-row">
+                                            <td>Gesamt Erträge</td>
+                                            <td style="color: #27ae60;">${formatCurrency(quarter.gesamt_einnahmen_aktuell)}</td>
+                                            <td style="color: #27ae60;">${formatCurrency(quarter.gesamt_einnahmen_vorjahr)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="details-section">
+                                <h4>Aufwendungen (Ausgaben)</h4>
+                                <table class="details-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kategorie</th>
+                                            <th>Aktuelles Jahr</th>
+                                            <th>Vorjahr</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Gebäude</td>
+                                            <td style="color: #e74c3c; font-weight: 500;">${formatCurrency(quarter.gebaeude_aktuell)}</td>
+                                            <td>${formatCurrency(quarter.gebaeude_vorjahr)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Personal</td>
+                                            <td style="color: #e74c3c; font-weight: 500;">${formatCurrency(quarter.personal_aktuell)}</td>
+                                            <td>${formatCurrency(quarter.personal_vorjahr)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sonstige</td>
+                                            <td style="color: #e74c3c; font-weight: 500;">${formatCurrency(quarter.sonstige_ausgaben_aktuell)}</td>
+                                            <td>${formatCurrency(quarter.sonstige_ausgaben_vorjahr)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mission</td>
+                                            <td style="color: #e74c3c; font-weight: 500;">${formatCurrency(quarter.mission_ausgaben_aktuell)}</td>
+                                            <td>${formatCurrency(quarter.mission_ausgaben_vorjahr)}</td>
+                                        </tr>
+                                        <tr class="total-row">
+                                            <td>Gesamt Aufwendungen</td>
+                                            <td style="color: #e74c3c;">${formatCurrency(quarter.gesamt_ausgaben_aktuell)}</td>
+                                            <td style="color: #e74c3c;">${formatCurrency(quarter.gesamt_ausgaben_vorjahr)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="details-section">
+                                <h4>Kontostände</h4>
+                                <table class="details-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Beschreibung</th>
+                                            <th>Aktuelles Jahr</th>
+                                            <th>Vorjahr</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="total-row">
+                                            <td>Kontostand am Quartalsende</td>
+                                            <td style="color: ${quarter.kontostand_aktuell >= 0 ? '#27ae60' : '#e74c3c'}; font-weight: bold;">${formatCurrency(quarter.kontostand_aktuell)}</td>
+                                            <td style="color: ${quarter.kontostand_vorjahr >= 0 ? '#27ae60' : '#e74c3c'};">${formatCurrency(quarter.kontostand_vorjahr)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            ${quarter.regelmaessig_prozent ? `
+                            <div class="details-section">
+                                <h4>Spenderverhalten</h4>
+                                <table class="details-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Typ</th>
+                                            <th colspan="2">Anteil</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Regelmäßige Spender</td>
+                                            <td colspan="2" style="text-align: right;">${quarter.regelmaessig_prozent}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Unregelmäßige Spender</td>
+                                            <td colspan="2" style="text-align: right;">${quarter.unregelmaessig_prozent}%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="card-front">
+                            <div class="quarter-header">
+                                <div class="quarter-title">${quarterNames[i]}</div>
+                                <div class="quarter-period">Noch nicht verfügbar</div>
+                            </div>
+                            <div class="quarter-overview">
+                                <div class="quarter-result" style="color: #999;">
+                                    Daten ausstehend
+                                </div>
+                                <div class="goals">
+                                    <div class="goal">
+                                        <div>
+                                            <div class="goal-label">Quartalsbedarf</div>
+                                            <div class="goal-amount">${formatCurrency(quartalsziele.quartalsbedarf)} benötigt</div>
+                                        </div>
+                                        <span class="goal-status" style="color: #999;">Ausstehend</span>
+                                    </div>
+                                    <div class="goal">
+                                        <div>
+                                            <div class="goal-label">Vision</div>
+                                            <div class="goal-amount">${formatCurrency(quartalsziele.visionsbetrag)} Vision</div>
+                                        </div>
+                                        <span class="goal-status" style="color: #999;">Ausstehend</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    card.style.opacity = '0.5';
+                    card.style.cursor = 'default';
+                }
+
+                container.appendChild(card);
+            }
+        }
+
+        function toggleCard(index) {
+            const cards = document.querySelectorAll('.quarter-card');
+            const card = cards[index];
+            const quarter = quarterData.find(q => q.quartal === index + 1);
+            if (quarter) {
+                card.classList.toggle('detailed');
+            }
+        }
+    </script>
+</body>
+</html>
