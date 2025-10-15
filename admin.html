@@ -303,7 +303,7 @@
                     </div>
                     <div class="form-group">
                         <label>Vorjahr (€)</label>
-                        <input type="number" step="0.01" id="spenden_vorjahr" value="0" required />
+                        <input type="number" step="0.01" id="spenden_vorjahr" value="0" oninput="calculateTotals()" required />
                     </div>
                 </div>
 
@@ -315,7 +315,7 @@
                     </div>
                     <div class="form-group">
                         <label>Vorjahr (€)</label>
-                        <input type="number" step="0.01" id="mission_einnahmen_vorjahr" value="0" required />
+                        <input type="number" step="0.01" id="mission_einnahmen_vorjahr" value="0" oninput="calculateTotals()" required />
                     </div>
                 </div>
 
@@ -327,7 +327,7 @@
                     </div>
                     <div class="form-group">
                         <label>Vorjahr (€)</label>
-                        <input type="number" step="0.01" id="sonstige_einnahmen_vorjahr" value="0" required />
+                        <input type="number" step="0.01" id="sonstige_einnahmen_vorjahr" value="0" oninput="calculateTotals()" required />
                     </div>
                 </div>
 
@@ -356,7 +356,7 @@
                     </div>
                     <div class="form-group">
                         <label>Vorjahr (€)</label>
-                        <input type="number" step="0.01" id="gebaeude_vorjahr" value="0" required />
+                        <input type="number" step="0.01" id="gebaeude_vorjahr" value="0" oninput="calculateTotals()" required />
                     </div>
                 </div>
 
@@ -368,7 +368,7 @@
                     </div>
                     <div class="form-group">
                         <label>Vorjahr (€)</label>
-                        <input type="number" step="0.01" id="personal_vorjahr" value="0" required />
+                        <input type="number" step="0.01" id="personal_vorjahr" value="0" oninput="calculateTotals()" required />
                     </div>
                 </div>
 
@@ -380,7 +380,7 @@
                     </div>
                     <div class="form-group">
                         <label>Vorjahr (€)</label>
-                        <input type="number" step="0.01" id="sonstige_ausgaben_vorjahr" value="0" required />
+                        <input type="number" step="0.01" id="sonstige_ausgaben_vorjahr" value="0" oninput="calculateTotals()" required />
                     </div>
                 </div>
 
@@ -392,7 +392,7 @@
                     </div>
                     <div class="form-group">
                         <label>Vorjahr (€)</label>
-                        <input type="number" step="0.01" id="mission_ausgaben_vorjahr" value="0" required />
+                        <input type="number" step="0.01" id="mission_ausgaben_vorjahr" value="0" oninput="calculateTotals()" required />
                     </div>
                 </div>
 
@@ -491,24 +491,26 @@
 
         // Berechnungen
         function calculateTotals() {
-            // Einnahmen
+            // Einnahmen Aktuell
             const spendenAktuell = parseFloat(document.getElementById('spenden_aktuell').value) || 0;
             const missionEinnahmenAktuell = parseFloat(document.getElementById('mission_einnahmen_aktuell').value) || 0;
             const sonstigeEinnahmenAktuell = parseFloat(document.getElementById('sonstige_einnahmen_aktuell').value) || 0;
             const einnahmenGesamtAktuell = spendenAktuell + missionEinnahmenAktuell + sonstigeEinnahmenAktuell;
 
+            // Einnahmen Vorjahr
             const spendenVorjahr = parseFloat(document.getElementById('spenden_vorjahr').value) || 0;
             const missionEinnahmenVorjahr = parseFloat(document.getElementById('mission_einnahmen_vorjahr').value) || 0;
             const sonstigeEinnahmenVorjahr = parseFloat(document.getElementById('sonstige_einnahmen_vorjahr').value) || 0;
             const einnahmenGesamtVorjahr = spendenVorjahr + missionEinnahmenVorjahr + sonstigeEinnahmenVorjahr;
 
-            // Ausgaben
+            // Ausgaben Aktuell
             const gebäudeAktuell = parseFloat(document.getElementById('gebaeude_aktuell').value) || 0;
             const personalAktuell = parseFloat(document.getElementById('personal_aktuell').value) || 0;
             const sonstigeAusgabenAktuell = parseFloat(document.getElementById('sonstige_ausgaben_aktuell').value) || 0;
             const missionAusgabenAktuell = parseFloat(document.getElementById('mission_ausgaben_aktuell').value) || 0;
             const ausgabenGesamtAktuell = gebäudeAktuell + personalAktuell + sonstigeAusgabenAktuell + missionAusgabenAktuell;
 
+            // Ausgaben Vorjahr
             const gebäudeVorjahr = parseFloat(document.getElementById('gebaeude_vorjahr').value) || 0;
             const personalVorjahr = parseFloat(document.getElementById('personal_vorjahr').value) || 0;
             const sonstigeAusgabenVorjahr = parseFloat(document.getElementById('sonstige_ausgaben_vorjahr').value) || 0;
