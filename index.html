@@ -857,10 +857,21 @@
                         quarter.einnahmen_spenden_aktuell || 
                         0
                     );
+                    const einnahmenSpendenVorjahr = parseNumber(
+                        quarter.spenden_vorjahr || 
+                        quarter.einnahmen_spenden_vorjahr || 
+                        0
+                    );
                     const einnahmenMission = parseNumber(
                         quarter.mission_einnahmen_aktuell || 
                         quarter.einnahmen_mission_aktuell ||
                         quarter.mission_aktuell ||
+                        0
+                    );
+                    const einnahmenMissionVorjahr = parseNumber(
+                        quarter.mission_einnahmen_vorjahr || 
+                        quarter.einnahmen_mission_vorjahr ||
+                        quarter.mission_vorjahr ||
                         0
                     );
                     const einnahmenSonstige = parseNumber(
@@ -869,10 +880,22 @@
                         quarter.sonstige_aktuell ||
                         0
                     );
+                    const einnahmenSonstigeVorjahr = parseNumber(
+                        quarter.sonstige_einnahmen_vorjahr || 
+                        quarter.einnahmen_sonstige_vorjahr ||
+                        quarter.sonstige_vorjahr ||
+                        0
+                    );
                     const einnahmenGesamt = parseNumber(
                         quarter.gesamt_einnahmen_aktuell || 
                         quarter.einnahmen_gesamt_aktuell ||
                         quarter.gesamt_aktuell ||
+                        0
+                    );
+                    const einnahmenGesamtVorjahr = parseNumber(
+                        quarter.gesamt_einnahmen_vorjahr || 
+                        quarter.einnahmen_gesamt_vorjahr ||
+                        quarter.gesamt_vorjahr ||
                         0
                     );
                     
@@ -882,9 +905,19 @@
                         quarter.ausgaben_gebaeude_aktuell ||
                         0
                     );
+                    const ausgabenGebaeudeVorjahr = parseNumber(
+                        quarter.gebaeude_vorjahr || 
+                        quarter.ausgaben_gebaeude_vorjahr ||
+                        0
+                    );
                     const ausgabenPersonal = parseNumber(
                         quarter.personal_aktuell || 
                         quarter.ausgaben_personal_aktuell ||
+                        0
+                    );
+                    const ausgabenPersonalVorjahr = parseNumber(
+                        quarter.personal_vorjahr || 
+                        quarter.ausgaben_personal_vorjahr ||
                         0
                     );
                     const ausgabenMission = parseNumber(
@@ -892,9 +925,19 @@
                         quarter.ausgaben_mission_aktuell ||
                         0
                     );
+                    const ausgabenMissionVorjahr = parseNumber(
+                        quarter.mission_ausgaben_vorjahr || 
+                        quarter.ausgaben_mission_vorjahr ||
+                        0
+                    );
                     const ausgabenSonstige = parseNumber(
                         quarter.sonstige_ausgaben_aktuell || 
                         quarter.ausgaben_sonstige_aktuell ||
+                        0
+                    );
+                    const ausgabenSonstigeVorjahr = parseNumber(
+                        quarter.sonstige_ausgaben_vorjahr || 
+                        quarter.ausgaben_sonstige_vorjahr ||
                         0
                     );
                     const ausgabenGesamt = parseNumber(
@@ -902,20 +945,15 @@
                         quarter.ausgaben_gesamt_aktuell ||
                         0
                     );
+                    const ausgabenGesamtVorjahr = parseNumber(
+                        quarter.gesamt_ausgaben_vorjahr || 
+                        quarter.ausgaben_gesamt_vorjahr ||
+                        0
+                    );
                     
                     const quarterlyGoalAchieved = ueberschuss >= parseNumber(quartalsziele.quartalsbedarf);
                     const visionGoalAchieved = ueberschuss >= parseNumber(quartalsziele.visionsbetrag);
                     const periodText = `${formatDate(quarter.period_start)} - ${formatDate(quarter.period_end)}`;
-
-                    // Calculate percentages safely
-                    const spendenProzent = einnahmenGesamt > 0 ? ((einnahmenSpenden / einnahmenGesamt) * 100).toFixed(1) : '0.0';
-                    const missionEinnahmenProzent = einnahmenGesamt > 0 ? ((einnahmenMission / einnahmenGesamt) * 100).toFixed(1) : '0.0';
-                    const sonstigeEinnahmenProzent = einnahmenGesamt > 0 ? ((einnahmenSonstige / einnahmenGesamt) * 100).toFixed(1) : '0.0';
-                    
-                    const gebaeudeProzent = ausgabenGesamt > 0 ? ((ausgabenGebaeude / ausgabenGesamt) * 100).toFixed(1) : '0.0';
-                    const personalProzent = ausgabenGesamt > 0 ? ((ausgabenPersonal / ausgabenGesamt) * 100).toFixed(1) : '0.0';
-                    const missionAusgabenProzent = ausgabenGesamt > 0 ? ((ausgabenMission / ausgabenGesamt) * 100).toFixed(1) : '0.0';
-                    const sonstigeAusgabenProzent = ausgabenGesamt > 0 ? ((ausgabenSonstige / ausgabenGesamt) * 100).toFixed(1) : '0.0';
 
                     card.innerHTML = `
                         <div class="card-front">
@@ -964,30 +1002,30 @@
                                     <thead>
                                         <tr>
                                             <th>Kategorie</th>
-                                            <th>Betrag</th>
-                                            <th>Anteil</th>
+                                            <th>Aktuell</th>
+                                            <th>Vorjahr</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td>Spenden</td>
                                             <td>${formatCurrency(einnahmenSpenden)}</td>
-                                            <td>${spendenProzent}%</td>
+                                            <td>${formatCurrency(einnahmenSpendenVorjahr)}</td>
                                         </tr>
                                         <tr>
                                             <td>Mission</td>
                                             <td>${formatCurrency(einnahmenMission)}</td>
-                                            <td>${missionEinnahmenProzent}%</td>
+                                            <td>${formatCurrency(einnahmenMissionVorjahr)}</td>
                                         </tr>
                                         <tr>
                                             <td>Sonstige</td>
                                             <td>${formatCurrency(einnahmenSonstige)}</td>
-                                            <td>${sonstigeEinnahmenProzent}%</td>
+                                            <td>${formatCurrency(einnahmenSonstigeVorjahr)}</td>
                                         </tr>
                                         <tr class="total-row">
                                             <td>Gesamt Einnahmen</td>
                                             <td>${formatCurrency(einnahmenGesamt)}</td>
-                                            <td>100%</td>
+                                            <td>${formatCurrency(einnahmenGesamtVorjahr)}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -999,35 +1037,35 @@
                                     <thead>
                                         <tr>
                                             <th>Kategorie</th>
-                                            <th>Betrag</th>
-                                            <th>Anteil</th>
+                                            <th>Aktuell</th>
+                                            <th>Vorjahr</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td>Gebäude</td>
                                             <td>${formatCurrency(ausgabenGebaeude)}</td>
-                                            <td>${gebaeudeProzent}%</td>
+                                            <td>${formatCurrency(ausgabenGebaeudeVorjahr)}</td>
                                         </tr>
                                         <tr>
                                             <td>Personal</td>
                                             <td>${formatCurrency(ausgabenPersonal)}</td>
-                                            <td>${personalProzent}%</td>
+                                            <td>${formatCurrency(ausgabenPersonalVorjahr)}</td>
                                         </tr>
                                         <tr>
                                             <td>Mission</td>
                                             <td>${formatCurrency(ausgabenMission)}</td>
-                                            <td>${missionAusgabenProzent}%</td>
+                                            <td>${formatCurrency(ausgabenMissionVorjahr)}</td>
                                         </tr>
                                         <tr>
                                             <td>Sonstige</td>
                                             <td>${formatCurrency(ausgabenSonstige)}</td>
-                                            <td>${sonstigeAusgabenProzent}%</td>
+                                            <td>${formatCurrency(ausgabenSonstigeVorjahr)}</td>
                                         </tr>
                                         <tr class="total-row">
                                             <td>Gesamt Ausgaben</td>
                                             <td>${formatCurrency(ausgabenGesamt)}</td>
-                                            <td>100%</td>
+                                            <td>${formatCurrency(ausgabenGesamtVorjahr)}</td>
                                         </tr>
                                     </tbody>
                                 </table>
