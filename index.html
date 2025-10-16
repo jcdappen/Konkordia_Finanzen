@@ -584,7 +584,7 @@
         <div class="header">
             <h1>Finanz-Dashboard 2025</h1>
             <p>Quartalsergebnisse und Jahresübersicht</p>
-            <p class="disclaimer">Alle angegebenen Zahlen sind vorläufige Werte und können sich durch Nachbuchungen oder Korrektungen ändern.</p>
+            <p class="disclaimer">Alle angegebenen Zahlen sind vorläufige Werte und können sich durch Nachbuchungen oder Korrekturen ändern.</p>
             <button onclick="openModal()" class="info-link">📖 Erklärung der Finanzposten</button>
         </div>
 
@@ -785,6 +785,8 @@
                 
                 const data = await response.json();
                 
+                console.log('Received data:', data); // Debug log
+                
                 quarterData = data.quartale || [];
                 quartalsziele = data.quartalsziele || { quartalsbedarf: 75000, visionsbetrag: 81000 };
                 
@@ -797,7 +799,7 @@
             } catch (error) {
                 console.error('Fehler beim Laden der Daten:', error);
                 document.getElementById('loadingIndicator').innerHTML = 
-                    '<div class="error">Fehler beim Laden der Daten aus der Datenbank. Bitte versuchen Sie es später erneut.</div>';
+                    '<div class="error">Fehler beim Laden der Daten aus der Datenbank. Bitte versuchen Sie es später erneut.<br><small>' + error.message + '</small></div>';
             }
         }
 
@@ -828,6 +830,12 @@
             }
         }
 
+        // Helper function to safely get nested properties
+        function getNestedValue(obj, path, defaultValue = 0) {
+            return path.split('.').reduce((current, prop) => 
+                current && current[prop] !== undefined ? current[prop] : defaultValue, obj);
+        }
+
         function renderQuarterCards() {
             const container = document.getElementById('quartersContainer');
             container.innerHTML = '';
@@ -841,9 +849,34 @@
                 card.id = `quarter-${i}`;
                 
                 if (quarter) {
-                    const quarterlyGoalAchieved = quarter.ueberschuss >= quartalsziele.quartalsbedarf;
-                    const visionGoalAchieved = quarter.ueberschuss >= quartalsziele.visionsbetrag;
+                    console.log(`Quarter ${i+1} data:`, quarter); // Debug log
+                    
+                    // Safely access nested properties with defaults
+                    const ueberschuss = quarter.ueberschuss || 0;
+                    const einnahmenSpenden = getNestedValue(quarter, 'einnahmen.spenden', 0);
+                    const einnahmenMission = getNestedValue(quarter, 'einnahmen.mission', 0);
+                    const einnahmenSonstige = getNestedValue(quarter, 'einnahmen.sonstige', 0);
+                    const einnahmenGesamt = getNestedValue(quarter, 'einnahmen.gesamt', 0);
+                    
+                    const ausgabenGebaeude = getNestedValue(quarter, 'ausgaben.gebaeude', 0);
+                    const ausgabenPersonal = getNestedValue(quarter, 'ausgaben.personal', 0);
+                    const ausgabenMission = getNestedValue(quarter, 'ausgaben.mission', 0);
+                    const ausgabenSonstige = getNestedValue(quarter, 'ausgaben.sonstige', 0);
+                    const ausgabenGesamt = getNestedValue(quarter, 'ausgaben.gesamt', 0);
+                    
+                    const quarterlyGoalAchieved = ueberschuss >= quartalsziele.quartalsbedarf;
+                    const visionGoalAchieved = ueberschuss >= quartalsziele.visionsbetrag;
                     const periodText = `${formatDate(quarter.period_start)} - ${formatDate(quarter.period_end)}`;
+
+                    // Calculate percentages safely
+                    const spendenProzent = einnahmenGesamt > 0 ? ((einnahmenSpenden / einnahmenGesamt) * 100).toFixed(1) : '0.0';
+                    const missionEinnahmenProzent = einnahmenGesamt > 0 ? ((einnahmenMission / einnahmenGesamt) * 100).toFixed(1) : '0.0';
+                    const sonstigeEinnahmenProzent = einnahmenGesamt > 0 ? ((einnahmenSonstige / einnahmenGesamt) * 100).toFixed(1) : '0.0';
+                    
+                    const gebaeudeProzent = ausgabenGesamt > 0 ? ((ausgabenGebaeude / ausgabenGesamt) * 100).toFixed(1) : '0.0';
+                    const personalProzent = ausgabenGesamt > 0 ? ((ausgabenPersonal / ausgabenGesamt) * 100).toFixed(1) : '0.0';
+                    const missionAusgabenProzent = ausgabenGesamt > 0 ? ((ausgabenMission / ausgabenGesamt) * 100).toFixed(1) : '0.0';
+                    const sonstigeAusgabenProzent = ausgabenGesamt > 0 ? ((ausgabenSonstige / ausgabenGesamt) * 100).toFixed(1) : '0.0';
 
                     card.innerHTML = `
                         <div class="card-front">
@@ -852,8 +885,8 @@
                                 <div class="quarter-period">${periodText}</div>
                             </div>
                             <div class="quarter-overview">
-                                <div class="quarter-result ${quarter.ueberschuss >= 0 ? 'positive' : 'negative'}">
-                                    ${formatCurrency(quarter.ueberschuss)}
+                                <div class="quarter-result ${ueberschuss >= 0 ? 'positive' : 'negative'}">
+                                    ${formatCurrency(ueberschuss)}
                                 </div>
                                 <div class="goals">
                                     <div class="goal ${quarterlyGoalAchieved ? 'achieved' : 'not-achieved'}">
@@ -879,7 +912,7 @@
                             <div class="click-hint">Klicken für Details</div>
                         </div>
                         <div class="card-back">
-                            <button class="back-btn" onclick="toggleCard(${i})">← Zurück zur Übersicht</button>
+                            <button class="back-btn" onclick="event.stopPropagation(); toggleCard(${i})">← Zurück zur Übersicht</button>
                             
                             <div class="quarter-header">
                                 <div class="quarter-title">${quarterNames[i]} - Detailansicht</div>
@@ -899,22 +932,22 @@
                                     <tbody>
                                         <tr>
                                             <td>Spenden</td>
-                                            <td>${formatCurrency(quarter.einnahmen.spenden)}</td>
-                                            <td>${((quarter.einnahmen.spenden / quarter.einnahmen.gesamt) * 100).toFixed(1)}%</td>
+                                            <td>${formatCurrency(einnahmenSpenden)}</td>
+                                            <td>${spendenProzent}%</td>
                                         </tr>
                                         <tr>
                                             <td>Mission</td>
-                                            <td>${formatCurrency(quarter.einnahmen.mission)}</td>
-                                            <td>${((quarter.einnahmen.mission / quarter.einnahmen.gesamt) * 100).toFixed(1)}%</td>
+                                            <td>${formatCurrency(einnahmenMission)}</td>
+                                            <td>${missionEinnahmenProzent}%</td>
                                         </tr>
                                         <tr>
                                             <td>Sonstige</td>
-                                            <td>${formatCurrency(quarter.einnahmen.sonstige)}</td>
-                                            <td>${((quarter.einnahmen.sonstige / quarter.einnahmen.gesamt) * 100).toFixed(1)}%</td>
+                                            <td>${formatCurrency(einnahmenSonstige)}</td>
+                                            <td>${sonstigeEinnahmenProzent}%</td>
                                         </tr>
                                         <tr class="total-row">
                                             <td>Gesamt Einnahmen</td>
-                                            <td>${formatCurrency(quarter.einnahmen.gesamt)}</td>
+                                            <td>${formatCurrency(einnahmenGesamt)}</td>
                                             <td>100%</td>
                                         </tr>
                                     </tbody>
@@ -934,27 +967,27 @@
                                     <tbody>
                                         <tr>
                                             <td>Gebäude</td>
-                                            <td>${formatCurrency(quarter.ausgaben.gebaeude)}</td>
-                                            <td>${((quarter.ausgaben.gebaeude / quarter.ausgaben.gesamt) * 100).toFixed(1)}%</td>
+                                            <td>${formatCurrency(ausgabenGebaeude)}</td>
+                                            <td>${gebaeudeProzent}%</td>
                                         </tr>
                                         <tr>
                                             <td>Personal</td>
-                                            <td>${formatCurrency(quarter.ausgaben.personal)}</td>
-                                            <td>${((quarter.ausgaben.personal / quarter.ausgaben.gesamt) * 100).toFixed(1)}%</td>
+                                            <td>${formatCurrency(ausgabenPersonal)}</td>
+                                            <td>${personalProzent}%</td>
                                         </tr>
                                         <tr>
                                             <td>Mission</td>
-                                            <td>${formatCurrency(quarter.ausgaben.mission)}</td>
-                                            <td>${((quarter.ausgaben.mission / quarter.ausgaben.gesamt) * 100).toFixed(1)}%</td>
+                                            <td>${formatCurrency(ausgabenMission)}</td>
+                                            <td>${missionAusgabenProzent}%</td>
                                         </tr>
                                         <tr>
                                             <td>Sonstige</td>
-                                            <td>${formatCurrency(quarter.ausgaben.sonstige)}</td>
-                                            <td>${((quarter.ausgaben.sonstige / quarter.ausgaben.gesamt) * 100).toFixed(1)}%</td>
+                                            <td>${formatCurrency(ausgabenSonstige)}</td>
+                                            <td>${sonstigeAusgabenProzent}%</td>
                                         </tr>
                                         <tr class="total-row">
                                             <td>Gesamt Ausgaben</td>
-                                            <td>${formatCurrency(quarter.ausgaben.gesamt)}</td>
+                                            <td>${formatCurrency(ausgabenGesamt)}</td>
                                             <td>100%</td>
                                         </tr>
                                     </tbody>
@@ -967,18 +1000,18 @@
                                     <tbody>
                                         <tr>
                                             <td>Einnahmen</td>
-                                            <td>${formatCurrency(quarter.einnahmen.gesamt)}</td>
+                                            <td>${formatCurrency(einnahmenGesamt)}</td>
                                             <td></td>
                                         </tr>
                                         <tr>
                                             <td>Ausgaben</td>
-                                            <td>${formatCurrency(quarter.ausgaben.gesamt)}</td>
+                                            <td>${formatCurrency(ausgabenGesamt)}</td>
                                             <td></td>
                                         </tr>
                                         <tr class="total-row">
                                             <td>Quartalsüberschuss/-defizit</td>
-                                            <td class="${quarter.ueberschuss >= 0 ? 'positive' : 'negative'}">
-                                                ${formatCurrency(quarter.ueberschuss)}
+                                            <td class="${ueberschuss >= 0 ? 'positive' : 'negative'}">
+                                                ${formatCurrency(ueberschuss)}
                                             </td>
                                             <td></td>
                                         </tr>
