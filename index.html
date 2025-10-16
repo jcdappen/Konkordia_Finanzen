@@ -119,7 +119,6 @@
             transform: translateY(-2px);
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -381,9 +380,17 @@
         }
 
         .quarter-result {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: bold;
             text-align: center;
+        }
+
+        .click-hint {
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            font-style: italic;
         }
 
         .goals {
@@ -577,7 +584,7 @@
         <div class="header">
             <h1>Finanz-Dashboard 2025</h1>
             <p>Quartalsergebnisse und Jahresübersicht</p>
-            <p class="disclaimer">Alle angegebenen Zahlen sind vorläufige Werte und können sich durch Nachbuchungen oder Korrekturen ändern.</p>
+            <p class="disclaimer">Alle angegebenen Zahlen sind vorläufige Werte und können sich durch Nachbuchungen oder Korrektungen ändern.</p>
             <button onclick="openModal()" class="info-link">📖 Erklärung der Finanzposten</button>
         </div>
 
@@ -831,10 +838,9 @@
                 const quarter = quarterData.find(q => q.quartal === i + 1);
                 const card = document.createElement('div');
                 card.className = 'quarter-card';
+                card.id = `quarter-${i}`;
                 
                 if (quarter) {
-                    card.onclick = () => toggleCard(i);
-                    
                     const quarterlyGoalAchieved = quarter.ueberschuss >= quartalsziele.quartalsbedarf;
                     const visionGoalAchieved = quarter.ueberschuss >= quartalsziele.visionsbetrag;
                     const periodText = `${formatDate(quarter.period_start)} - ${formatDate(quarter.period_end)}`;
@@ -865,3 +871,165 @@
                                             <div class="goal-amount">${formatCurrency(quartalsziele.visionsbetrag)} Vision</div>
                                         </div>
                                         <span class="goal-status ${visionGoalAchieved ? 'achieved' : 'not-achieved'}">
+                                            ${visionGoalAchieved ? '✓ Erreicht' : '✗ Nicht erreicht'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="click-hint">Klicken für Details</div>
+                        </div>
+                        <div class="card-back">
+                            <button class="back-btn" onclick="toggleCard(${i})">← Zurück zur Übersicht</button>
+                            
+                            <div class="quarter-header">
+                                <div class="quarter-title">${quarterNames[i]} - Detailansicht</div>
+                                <div class="quarter-period">${periodText}</div>
+                            </div>
+
+                            <div class="details-section">
+                                <h4>📈 Einnahmen</h4>
+                                <table class="details-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kategorie</th>
+                                            <th>Betrag</th>
+                                            <th>Anteil</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Spenden</td>
+                                            <td>${formatCurrency(quarter.einnahmen.spenden)}</td>
+                                            <td>${((quarter.einnahmen.spenden / quarter.einnahmen.gesamt) * 100).toFixed(1)}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mission</td>
+                                            <td>${formatCurrency(quarter.einnahmen.mission)}</td>
+                                            <td>${((quarter.einnahmen.mission / quarter.einnahmen.gesamt) * 100).toFixed(1)}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sonstige</td>
+                                            <td>${formatCurrency(quarter.einnahmen.sonstige)}</td>
+                                            <td>${((quarter.einnahmen.sonstige / quarter.einnahmen.gesamt) * 100).toFixed(1)}%</td>
+                                        </tr>
+                                        <tr class="total-row">
+                                            <td>Gesamt Einnahmen</td>
+                                            <td>${formatCurrency(quarter.einnahmen.gesamt)}</td>
+                                            <td>100%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="details-section">
+                                <h4>📉 Ausgaben</h4>
+                                <table class="details-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kategorie</th>
+                                            <th>Betrag</th>
+                                            <th>Anteil</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Gebäude</td>
+                                            <td>${formatCurrency(quarter.ausgaben.gebaeude)}</td>
+                                            <td>${((quarter.ausgaben.gebaeude / quarter.ausgaben.gesamt) * 100).toFixed(1)}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Personal</td>
+                                            <td>${formatCurrency(quarter.ausgaben.personal)}</td>
+                                            <td>${((quarter.ausgaben.personal / quarter.ausgaben.gesamt) * 100).toFixed(1)}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mission</td>
+                                            <td>${formatCurrency(quarter.ausgaben.mission)}</td>
+                                            <td>${((quarter.ausgaben.mission / quarter.ausgaben.gesamt) * 100).toFixed(1)}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sonstige</td>
+                                            <td>${formatCurrency(quarter.ausgaben.sonstige)}</td>
+                                            <td>${((quarter.ausgaben.sonstige / quarter.ausgaben.gesamt) * 100).toFixed(1)}%</td>
+                                        </tr>
+                                        <tr class="total-row">
+                                            <td>Gesamt Ausgaben</td>
+                                            <td>${formatCurrency(quarter.ausgaben.gesamt)}</td>
+                                            <td>100%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="details-section">
+                                <h4>💰 Ergebnis</h4>
+                                <table class="details-table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Einnahmen</td>
+                                            <td>${formatCurrency(quarter.einnahmen.gesamt)}</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ausgaben</td>
+                                            <td>${formatCurrency(quarter.ausgaben.gesamt)}</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="total-row">
+                                            <td>Quartalsüberschuss/-defizit</td>
+                                            <td class="${quarter.ueberschuss >= 0 ? 'positive' : 'negative'}">
+                                                ${formatCurrency(quarter.ueberschuss)}
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                    
+                    card.onclick = function() { toggleCard(i); };
+                } else {
+                    card.innerHTML = `
+                        <div class="card-front">
+                            <div class="quarter-header">
+                                <div class="quarter-title">${quarterNames[i]}</div>
+                            </div>
+                            <div style="text-align: center; color: #999; padding: 20px;">
+                                Noch keine Daten verfügbar
+                            </div>
+                        </div>
+                    `;
+                    card.style.cursor = 'default';
+                    card.onclick = null;
+                }
+
+                container.appendChild(card);
+            }
+        }
+
+        function toggleCard(index) {
+            const card = document.getElementById(`quarter-${index}`);
+            if (card) {
+                card.classList.toggle('detailed');
+            }
+        }
+
+        function openModal() {
+            document.getElementById('explanationModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('explanationModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('explanationModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
