@@ -785,8 +785,6 @@
                 
                 const data = await response.json();
                 
-                console.log('Received data:', data); // Debug log
-                
                 quarterData = data.quartale || [];
                 quartalsziele = data.quartalsziele || { quartalsbedarf: 75000, visionsbetrag: 81000 };
                 
@@ -799,15 +797,22 @@
             } catch (error) {
                 console.error('Fehler beim Laden der Daten:', error);
                 document.getElementById('loadingIndicator').innerHTML = 
-                    '<div class="error">Fehler beim Laden der Daten aus der Datenbank. Bitte versuchen Sie es später erneut.<br><small>' + error.message + '</small></div>';
+                    '<div class="error">Fehler beim Laden der Daten aus der Datenbank. Bitte versuchen Sie es später erneut.</div>';
             }
+        }
+
+        function parseNumber(value) {
+            if (value === null || value === undefined) return 0;
+            if (typeof value === 'number') return value;
+            if (typeof value === 'string') return parseFloat(value) || 0;
+            return 0;
         }
 
         function formatCurrency(amount) {
             return new Intl.NumberFormat('de-DE', {
                 style: 'currency',
                 currency: 'EUR'
-            }).format(amount || 0);
+            }).format(parseNumber(amount));
         }
 
         function formatDate(dateString) {
@@ -818,9 +823,9 @@
 
         function updateYearSummary(jahresuebersicht) {
             if (jahresuebersicht) {
-                document.getElementById('yearResult').textContent = formatCurrency(jahresuebersicht.kumuliertes_ergebnis);
-                document.getElementById('yearResult').className = 'value ' + 
-                    (jahresuebersicht.kumuliertes_ergebnis >= 0 ? 'positive' : 'negative');
+                const ergebnis = parseNumber(jahresuebersicht.kumuliertes_ergebnis);
+                document.getElementById('yearResult').textContent = formatCurrency(ergebnis);
+                document.getElementById('yearResult').className = 'value ' + (ergebnis >= 0 ? 'positive' : 'negative');
                 document.getElementById('yearIncome').textContent = formatCurrency(jahresuebersicht.gesamteinnahmen);
                 document.getElementById('yearExpenses').textContent = formatCurrency(jahresuebersicht.gesamtausgaben);
             } else {
@@ -828,12 +833,6 @@
                 document.getElementById('yearIncome').textContent = formatCurrency(0);
                 document.getElementById('yearExpenses').textContent = formatCurrency(0);
             }
-        }
-
-        // Helper function to safely get nested properties
-        function getNestedValue(obj, path, defaultValue = 0) {
-            return path.split('.').reduce((current, prop) => 
-                current && current[prop] !== undefined ? current[prop] : defaultValue, obj);
         }
 
         function renderQuarterCards() {
@@ -849,23 +848,63 @@
                 card.id = `quarter-${i}`;
                 
                 if (quarter) {
-                    console.log(`Quarter ${i+1} data:`, quarter); // Debug log
+                    // Extrahiere Werte - unterstützt beide mögliche Feldnamen
+                    const ueberschuss = parseNumber(quarter.ueberschuss);
                     
-                    // Safely access nested properties with defaults
-                    const ueberschuss = quarter.ueberschuss || 0;
-                    const einnahmenSpenden = getNestedValue(quarter, 'einnahmen.spenden', 0);
-                    const einnahmenMission = getNestedValue(quarter, 'einnahmen.mission', 0);
-                    const einnahmenSonstige = getNestedValue(quarter, 'einnahmen.sonstige', 0);
-                    const einnahmenGesamt = getNestedValue(quarter, 'einnahmen.gesamt', 0);
+                    // Einnahmen - prüfe verschiedene mögliche Feldnamen
+                    const einnahmenSpenden = parseNumber(
+                        quarter.spenden_aktuell || 
+                        quarter.einnahmen_spenden_aktuell || 
+                        0
+                    );
+                    const einnahmenMission = parseNumber(
+                        quarter.mission_einnahmen_aktuell || 
+                        quarter.einnahmen_mission_aktuell ||
+                        quarter.mission_aktuell ||
+                        0
+                    );
+                    const einnahmenSonstige = parseNumber(
+                        quarter.sonstige_einnahmen_aktuell || 
+                        quarter.einnahmen_sonstige_aktuell ||
+                        quarter.sonstige_aktuell ||
+                        0
+                    );
+                    const einnahmenGesamt = parseNumber(
+                        quarter.gesamt_einnahmen_aktuell || 
+                        quarter.einnahmen_gesamt_aktuell ||
+                        quarter.gesamt_aktuell ||
+                        0
+                    );
                     
-                    const ausgabenGebaeude = getNestedValue(quarter, 'ausgaben.gebaeude', 0);
-                    const ausgabenPersonal = getNestedValue(quarter, 'ausgaben.personal', 0);
-                    const ausgabenMission = getNestedValue(quarter, 'ausgaben.mission', 0);
-                    const ausgabenSonstige = getNestedValue(quarter, 'ausgaben.sonstige', 0);
-                    const ausgabenGesamt = getNestedValue(quarter, 'ausgaben.gesamt', 0);
+                    // Ausgaben - prüfe verschiedene mögliche Feldnamen
+                    const ausgabenGebaeude = parseNumber(
+                        quarter.gebaeude_aktuell || 
+                        quarter.ausgaben_gebaeude_aktuell ||
+                        0
+                    );
+                    const ausgabenPersonal = parseNumber(
+                        quarter.personal_aktuell || 
+                        quarter.ausgaben_personal_aktuell ||
+                        0
+                    );
+                    const ausgabenMission = parseNumber(
+                        quarter.mission_ausgaben_aktuell || 
+                        quarter.ausgaben_mission_aktuell ||
+                        0
+                    );
+                    const ausgabenSonstige = parseNumber(
+                        quarter.sonstige_ausgaben_aktuell || 
+                        quarter.ausgaben_sonstige_aktuell ||
+                        0
+                    );
+                    const ausgabenGesamt = parseNumber(
+                        quarter.gesamt_ausgaben_aktuell || 
+                        quarter.ausgaben_gesamt_aktuell ||
+                        0
+                    );
                     
-                    const quarterlyGoalAchieved = ueberschuss >= quartalsziele.quartalsbedarf;
-                    const visionGoalAchieved = ueberschuss >= quartalsziele.visionsbetrag;
+                    const quarterlyGoalAchieved = ueberschuss >= parseNumber(quartalsziele.quartalsbedarf);
+                    const visionGoalAchieved = ueberschuss >= parseNumber(quartalsziele.visionsbetrag);
                     const periodText = `${formatDate(quarter.period_start)} - ${formatDate(quarter.period_end)}`;
 
                     // Calculate percentages safely
