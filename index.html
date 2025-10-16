@@ -381,9 +381,17 @@
         }
 
         .quarter-result {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: bold;
             text-align: center;
+        }
+
+        .click-hint {
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            font-style: italic;
         }
 
         .goals {
@@ -525,7 +533,7 @@
             }
             
             .quarter-result {
-                font-size: 2.5rem;
+                font-size: 1.8rem;
             }
             
             .details-table th,
@@ -846,8 +854,11 @@
                                 <div class="quarter-period">${periodText}</div>
                             </div>
                             <div class="quarter-overview">
-                                <div class="quarter-result ${quarter.ueberschuss >= 0 ? 'positive' : 'negative'}">
-                                    ${formatCurrency(quarter.ueberschuss)}
+                                <div>
+                                    <div class="quarter-result ${quarter.ueberschuss >= 0 ? 'positive' : 'negative'}">
+                                        ${formatCurrency(quarter.ueberschuss)}
+                                    </div>
+                                    <div class="click-hint">👆 Klicken für mehr Infos</div>
                                 </div>
                                 <div class="goals">
                                     <div class="goal ${quarterlyGoalAchieved ? 'achieved' : 'not-achieved'}">
@@ -859,9 +870,4 @@
                                             ${quarterlyGoalAchieved ? '✓ Erreicht' : '✗ Nicht erreicht'}
                                         </span>
                                     </div>
-                                    <div class="goal ${visionGoalAchieved ? 'achieved' : 'not-achieved'}">
-                                        <div>
-                                            <div class="goal-label">Vision erreicht</div>
-                                            <div class="goal-amount">${formatCurrency(quartalsziele.visionsbetrag)} Vision</div>
-                                        </div>
-                                        <span class="goal-status ${visionGoalAchieved ? 'achieved' : 'not-achieved'}">
+                                    <div class="goal ${visionGoalA
