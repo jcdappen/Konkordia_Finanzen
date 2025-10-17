@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanz-Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667292 0%, #2c3e50 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-form h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #667292;
+            box-shadow: 0 0 0 3px rgba(102, 114, 146, 0.2);
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 15px;
+            background: #667292;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-form button:hover {
+            background: #5a6580;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 114, 146, 0.3);
+        }
+
+        .login-form button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            color: #27ae60;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .dashboard {
+            display: none;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header .disclaimer {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .info-link {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-left: 10px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .info-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 40px;
+        }
+
+        /* Rest of your existing styles... */
+        .year-summary {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .year-summary h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f8f9fa;
+        }
+
+        .summary-item.highlight {
+            background: linear-gradient(135deg, #667292 0%, #2c3e50 100%);
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(102, 114, 146, 0.3);
+        }
+
+        .summary-item.highlight h3 {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .summary-item h3 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-item .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .positive { color: #27ae60; }
+        .negative { color: #e74c3c; }
+
+        .quarters-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <div class="login-form">
+            <h1>🔐 Finanz-Dashboard</h1>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                Sichere Authentifizierung
+            </p>
+            <input 
+                type="password" 
+                id="passwordInput" 
+                placeholder="Passwort eingeben"
+                autocomplete="current-password"
+            />
+            <button onclick="login()" id="loginBtn">Anmelden</button>
+            <div id="loginMessage"></div>
+        </div>
+    </div>
+
+    <div class="dashboard" id="dashboard">
+        <div class="header">
+            <h1>Finanz-Dashboard 2025</h1>
+            <p>Quartalsergebnisse und Jahresübersicht</p>
+            <p class="disclaimer">Alle angegebenen Zahlen sind vorläufige Werte und können sich durch Nachbuchungen oder Korrekturen ändern.</p>
+            <button onclick="logout()" class="logout-btn">🚪 Abmelden</button>
+            <button onclick="openModal()" class="info-link">📖 Erklärung der Finanzposten</button>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+            Lade Daten aus der Datenbank...
+        </div>
+
+        <div id="contentContainer" style="display: none;">
+            <div class="year-summary">
+                <h2>Jahresübersicht 2025</h2>
+                <div class="summary-grid">
+                    <div class="summary-item highlight">
+                        <h3>Kumuliertes Ergebnis</h3>
+                        <div class="value" id="yearResult">-</div>
+                    </div>
+                    <div class="summary-item">
+                        <h3>Gesamteinnahmen</h3>
+                        <div class="value positive" id="yearIncome">-</div>
+                    </div>
+                    <div class="summary-item">
+                        <h3>Gesamtausgaben</h3>
+                        <div class="value negative" id="yearExpenses">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quarters-container" id="quartersContainer">
+                <!-- Quartals-Karten werden hier dynamisch eingefügt -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            apiBaseUrl: "/api"  // Wird durch netlify.toml zu /.netlify/functions umgeleitet
+        };
+
+        let quarterData = [];
+        let quartalsziele = {};
+
+        // Beim Laden der Seite prüfen, ob bereits ein Token vorhanden ist
+        window.addEventListener('DOMContentLoaded', checkExistingToken);
+
+        function checkExistingToken() {
+            const token = sessionStorage.getItem('authToken');
+            if (token) {
+                // Token vorhanden, versuche Daten zu laden
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadDashboardData();
+            }
+        }
+
+        async function login() {
+            const password = document.getElementById('passwordInput').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const messageDiv = document.getElementById('loginMessage');
+
+            if (!password) {
+                showMessage('Bitte Passwort eingeben', 'error');
+                return;
+            }
+
+            // Button deaktivieren während des Logins
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Wird überprüft...';
+            messageDiv.textContent = '';
+
+            try {
+                // Login-Request an Backend
+                const response = await fetch(`${CONFIG.apiBaseUrl}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Login erfolgreich!
+                    sessionStorage.setItem('authToken', data.token);
+                    showMessage('Login erfolgreich! Lade Dashboard...', 'success');
+                    
+                    // Nach kurzer Verzögerung zum Dashboard wechseln
+                    setTimeout(() => {
+                        document.getElementById('loginContainer').style.display = 'none';
+                        document.getElementById('dashboard').style.display = 'block';
+                        loadDashboardData();
+                    }, 500);
+                } else {
+                    // Login fehlgeschlagen
+                    showMessage(data.message || 'Falsches Passwort', 'error');
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Anmelden';
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('Verbindungsfehler. Bitte versuchen Sie es erneut.', 'error');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Anmelden';
+            }
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('loginMessage');
+            messageDiv.textContent = message;
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('authToken');
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginMessage').textContent = '';
+        }
+
+        async function loadDashboardData() {
+            try {
+                document.getElementById('loadingIndicator').style.display = 'block';
+                document.getElementById('contentContainer').style.display = 'none';
+
+                const token = sessionStorage.getItem('authToken');
+
+                if (!token) {
+                    logout();
+                    return;
+                }
+
+                // Daten-Request mit Token
+                const response = await fetch(`${CONFIG.apiBaseUrl}/get-quarters?jahr=2025`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.status === 401) {
+                    // Token abgelaufen oder ungültig
+                    alert('Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.');
+                    logout();
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                quarterData = data.quartale || [];
+                quartalsziele = data.quartalsziele || { quartalsbedarf: 75000, visionsbetrag: 81000 };
+
+                updateYearSummary(data.jahresuebersicht);
+                renderQuarterCards();
+
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('contentContainer').style.display = 'block';
+
+            } catch (error) {
+                console.error('Fehler beim Laden der Daten:', error);
+                document.getElementById('loadingIndicator').innerHTML = 
+                    '<div class="error">Fehler beim Laden der Daten. Bitte versuchen Sie es später erneut.</div>';
+            }
+        }
+
+        // Enter-Taste im Passwort-Feld
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        login();
+                    }
+                });
+            }
+        });
+
+        function parseNumber(value) {
+            if (value === null || value === undefined) return 0;
+            if (typeof value === 'number') return value;
+            if (typeof value === 'string') return parseFloat(value) || 0;
+            return 0;
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(parseNumber(amount));
+        }
+
+        function updateYearSummary(jahresuebersicht) {
+            if (jahresuebersicht) {
+                const ergebnis = parseNumber(jahresuebersicht.kumuliertes_ergebnis);
+                document.getElementById('yearResult').textContent = formatCurrency(ergebnis);
+                document.getElementById('yearResult').className = 'value ' + (ergebnis >= 0 ? 'positive' : 'negative');
+                document.getElementById('yearIncome').textContent = formatCurrency(jahresuebersicht.gesamteinnahmen);
+                document.getElementById('yearExpenses').textContent = formatCurrency(jahresuebersicht.gesamtausgaben);
+            }
+        }
+
+        function renderQuarterCards() {
+            const container = document.getElementById('quartersContainer');
+            container.innerHTML = '<p style="color: white; text-align: center;">Quartalsansicht wird geladen...</p>';
+            
+            // Hier würde Ihre volle renderQuarterCards() Logik kommen
+            // Für dieses Beispiel vereinfacht:
+            container.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 16px; text-align: center;">
+                    <h3>✅ Daten erfolgreich geladen!</h3>
+                    <p style="margin-top: 20px; color: #666;">
+                        ${quarterData.length} Quartale gefunden
+                    </p>
+                    <p style="margin-top: 10px; color: #27ae60; font-weight: bold;">
+                        Die vollständige Quartalsansicht kommt im nächsten Schritt
+                    </p>
+                </div>
+            `;
+        }
+
+        function openModal() {
+            alert('Modal-Funktion hier hinzufügen');
+        }
+    </script>
+</body>
+</html>
