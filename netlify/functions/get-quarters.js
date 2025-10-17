@@ -126,10 +126,13 @@ exports.handler = async (event, context) => {
           a.sonstige_aktuell as sonstige_ausgaben_aktuell,
           a.sonstige_vorjahr as sonstige_ausgaben_vorjahr,
           a.gesamt_aktuell as gesamt_ausgaben_aktuell,
-          a.gesamt_vorjahr as gesamt_ausgaben_vorjahr
+          a.gesamt_vorjahr as gesamt_ausgaben_vorjahr,
+          s.regelmaessig_prozent,
+          s.unregelmaessig_prozent
         FROM quartale q
         LEFT JOIN einnahmen_kategorien e ON q.id = e.quartal_id
         LEFT JOIN ausgaben_kategorien a ON q.id = a.quartal_id
+        LEFT JOIN spenderverhalten s ON q.id = s.quartal_id
         WHERE q.jahr = $1
         ORDER BY q.quartal
       `, [jahr]);
@@ -159,7 +162,9 @@ exports.handler = async (event, context) => {
         sonstige_ausgaben_aktuell: row.sonstige_ausgaben_aktuell || 0,
         sonstige_ausgaben_vorjahr: row.sonstige_ausgaben_vorjahr || 0,
         gesamt_ausgaben_aktuell: row.gesamt_ausgaben_aktuell || 0,
-        gesamt_ausgaben_vorjahr: row.gesamt_ausgaben_vorjahr || 0
+        gesamt_ausgaben_vorjahr: row.gesamt_ausgaben_vorjahr || 0,
+        regelmaessig_prozent: row.regelmaessig_prozent || null,
+        unregelmaessig_prozent: row.unregelmaessig_prozent || null
       }));
 
       // Quartalsziele laden

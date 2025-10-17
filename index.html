@@ -54,14 +54,14 @@
 
         .login-form input:focus {
             outline: none;
-            border-color: #d4af37;
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            border-color: #bb2232;
+            box-shadow: 0 0 0 3px rgba(187, 34, 50, 0.2);
         }
 
         .login-form button {
             width: 100%;
             padding: 15px;
-            background: #d4af37;
+            background: #bb2232;
             color: white;
             border: none;
             border-radius: 8px;
@@ -72,9 +72,9 @@
         }
 
         .login-form button:hover {
-            background: #c49d2e;
+            background: #9a1c29;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 4px 12px rgba(187, 34, 50, 0.3);
         }
 
         .login-form button:disabled {
@@ -152,9 +152,9 @@
             background: #2980b9;
         }
 
-        /* Jahresübersicht - großer goldener Block */
+        /* Jahresübersicht - großer roter Block */
         .year-overview {
-            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+            background: linear-gradient(135deg, #e74c3c 0%, #bb2232 100%);
             border-radius: 16px;
             padding: 40px;
             margin-bottom: 40px;
@@ -170,7 +170,7 @@
 
         .year-overview h2 {
             font-size: 2.5rem;
-            color: #333;
+            color: white;
             margin-bottom: 20px;
             text-align: center;
         }
@@ -192,7 +192,7 @@
             font-size: 0.95rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: rgba(0,0,0,0.7);
+            color: rgba(255,255,255,0.9);
             margin-bottom: 8px;
             font-weight: 600;
         }
@@ -200,20 +200,21 @@
         .year-stat-value {
             font-size: 2rem;
             font-weight: bold;
-            color: #333;
+            color: white;
         }
 
         .year-stat-value.negative {
-            color: #c0392b;
+            color: #fff;
+            opacity: 0.9;
         }
 
         .year-stat-value.positive {
-            color: #27ae60;
+            color: #fff;
         }
 
         .click-hint {
             text-align: center;
-            color: rgba(0,0,0,0.6);
+            color: rgba(255,255,255,0.8);
             font-size: 0.9rem;
             font-style: italic;
             margin-top: 15px;
@@ -228,7 +229,7 @@
         }
 
         .quarter-card {
-            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+            background: linear-gradient(135deg, #e74c3c 0%, #bb2232 100%);
             border-radius: 16px;
             padding: 30px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
@@ -245,7 +246,7 @@
         .quarter-number {
             font-size: 1.8rem;
             font-weight: bold;
-            color: #333;
+            color: white;
             margin-bottom: 15px;
             font-style: italic;
         }
@@ -264,18 +265,18 @@
         }
 
         .status-achieved {
-            background: rgba(39, 174, 96, 0.3);
-            color: #27ae60;
+            background: rgba(39, 174, 96, 0.4);
+            color: white;
         }
 
         .status-not-achieved {
-            background: rgba(231, 76, 60, 0.3);
-            color: #c0392b;
+            background: rgba(0, 0, 0, 0.2);
+            color: rgba(255,255,255,0.8);
         }
 
         .quarter-result-label {
             font-size: 0.95rem;
-            color: rgba(0,0,0,0.7);
+            color: rgba(255,255,255,0.9);
             margin-bottom: 8px;
             font-style: italic;
         }
@@ -283,20 +284,21 @@
         .quarter-result-value {
             font-size: 2rem;
             font-weight: bold;
-            color: #333;
+            color: white;
         }
 
         .quarter-result-value.negative {
-            color: #c0392b;
+            color: white;
+            opacity: 0.9;
         }
 
         .quarter-result-value.positive {
-            color: #27ae60;
+            color: white;
         }
 
         .quarter-hint {
             text-align: center;
-            color: rgba(0,0,0,0.6);
+            color: rgba(255,255,255,0.8);
             font-size: 0.85rem;
             font-style: italic;
             margin-top: 15px;
@@ -344,8 +346,8 @@
 
         .modal-header {
             padding: 30px;
-            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
-            color: #333;
+            background: linear-gradient(135deg, #e74c3c 0%, #bb2232 100%);
+            color: white;
             border-radius: 16px 16px 0 0;
             position: relative;
         }
@@ -361,7 +363,7 @@
             top: 20px;
             font-size: 2rem;
             font-weight: bold;
-            color: #333;
+            color: white;
             cursor: pointer;
             background: none;
             border: none;
@@ -375,7 +377,7 @@
         }
 
         .modal-close:hover {
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             transform: rotate(90deg);
         }
 
@@ -393,7 +395,7 @@
             font-size: 1.5rem;
             margin-bottom: 20px;
             color: #333;
-            border-bottom: 3px solid #d4af37;
+            border-bottom: 3px solid #bb2232;
             padding-bottom: 10px;
         }
 
@@ -433,9 +435,9 @@
         }
 
         .details-table .total-row {
-            background-color: #fff3cd;
+            background-color: #ffe6e8;
             font-weight: bold;
-            border-top: 3px solid #d4af37;
+            border-top: 3px solid #bb2232;
         }
 
         .loading {
@@ -592,42 +594,42 @@
                     <button class="modal-close" onclick="closeInfoModal()">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #d4af37;">
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #bb2232;">
                         <p style="color: #555; line-height: 1.6; margin: 0;"><strong>Zweck dieser Übersicht:</strong> Diese Übersicht erklärt, welche konkreten Posten sich hinter den Hauptkategorien im Dashboard verbergen.</p>
                     </div>
 
                     <div style="margin-bottom: 40px;">
-                        <h3 style="color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #d4af37; font-size: 1.3rem;">📈 Einnahmen</h3>
+                        <h3 style="color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #bb2232; font-size: 1.3rem;">📈 Einnahmen</h3>
                         
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Spenden</h4>
+                            <h4 style="color: #bb2232; margin-bottom: 10px; font-size: 1.1rem;">Spenden</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #bb2232; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Spenden allgemein Ertrag
                                 </li>
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #bb2232; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Spenden Verzicht a. Erstatt. v. Aufwend.
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Mission</h4>
+                            <h4 style="color: #bb2232; margin-bottom: 10px; font-size: 1.1rem;">Mission</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #bb2232; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Spenden zweckgebunden Mission
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Sonstige Einnahmen</h4>
+                            <h4 style="color: #bb2232; margin-bottom: 10px; font-size: 1.1rem;">Sonstige Einnahmen</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #bb2232; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Weitere Einnahmen (Medien, Zinserträge, Untervermietung, etc.)
                                 </li>
                             </ul>
@@ -635,43 +637,43 @@
                     </div>
 
                     <div style="margin-bottom: 40px;">
-                        <h3 style="color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #d4af37; font-size: 1.3rem;">📉 Ausgaben</h3>
+                        <h3 style="color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #bb2232; font-size: 1.3rem;">📉 Ausgaben</h3>
                         
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Gebäude</h4>
+                            <h4 style="color: #bb2232; margin-bottom: 10px; font-size: 1.1rem;">Gebäude</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #bb2232; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Miete, Nebenkosten, Instandhaltung
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Personal</h4>
+                            <h4 style="color: #bb2232; margin-bottom: 10px; font-size: 1.1rem;">Personal</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #bb2232; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Löhne, Gehälter, Sozialversicherung, Reisekosten
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Mission</h4>
+                            <h4 style="color: #bb2232; margin-bottom: 10px; font-size: 1.1rem;">Mission</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #bb2232; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Missionsprojekte und Unterstützung
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Sonstige</h4>
+                            <h4 style="color: #bb2232; margin-bottom: 10px; font-size: 1.1rem;">Sonstige</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #bb2232; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Büro, Technik, Veranstaltungen, etc.
                                 </li>
                             </ul>
@@ -1114,6 +1116,52 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="details-section">
+                    <h3>🏦 Kontostände</h3>
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Zeitraum</th>
+                                <th>Kontostand</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Aktuelles Jahr (Ende Quartal)</td>
+                                <td>${formatCurrency(quarter.kontostand_aktuell)}</td>
+                            </tr>
+                            <tr>
+                                <td>Vorjahr (Ende Quartal)</td>
+                                <td>${formatCurrency(quarter.kontostand_vorjahr)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                ${quarter.regelmaessig_prozent !== null ? `
+                <div class="details-section">
+                    <h3>👥 Spenderverhalten</h3>
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Art</th>
+                                <th>Anteil</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Regelmäßige Spender</td>
+                                <td>${quarter.regelmaessig_prozent}%</td>
+                            </tr>
+                            <tr>
+                                <td>Unregelmäßige Spender</td>
+                                <td>${quarter.unregelmaessig_prozent}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                ` : ''}
             `;
 
             modal.style.display = 'block';
