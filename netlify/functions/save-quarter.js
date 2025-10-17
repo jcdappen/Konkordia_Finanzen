@@ -86,50 +86,107 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // HIER KOMMT IHRE DATENBANK-LOGIK HIN
-    // TODO: Ersetzen Sie dies mit Ihrem echten Datenbank-Aufruf
-    
-    // Beispiel für PostgreSQL:
-    /*
+    // DATABASE_URL prüfen
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
+      console.error('DATABASE_URL not set!');
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Datenbank nicht konfiguriert',
+          details: 'DATABASE_URL Umgebungsvariable fehlt in Netlify'
+        })
+      };
+    }
+
+    // PostgreSQL Connection
     const { Pool } = require('pg');
     const pool = new Pool({ 
-      connectionString: process.env.DATABASE_URL,
+      connectionString: databaseUrl,
       ssl: { rejectUnauthorized: false }
     });
 
-    // Prüfen ob Quartal bereits existiert
-    const checkResult = await pool.query(
-      'SELECT id FROM quartale WHERE jahr = $1 AND quartal = $2',
-      [data.jahr, data.quartal]
-    );
+    try {
+      // Berechne Gesamtsummen
+      const einnahmenGesamtAktuell = parseFloat(data.spenden_aktuell || 0) + 
+                                     parseFloat(data.mission_einnahmen_aktuell || 0) + 
+                                     parseFloat(data.sonstige_einnahmen_aktuell || 0);
+      
+      const einnahmenGesamtVorjahr = parseFloat(data.spenden_vorjahr || 0) + 
+                                     parseFloat(data.mission_einnahmen_vorjahr || 0) + 
+                                     parseFloat(data.sonstige_einnahmen_vorjahr || 0);
+      
+      const ausgabenGesamtAktuell = parseFloat(data.gebaeude_aktuell || 0) + 
+                                    parseFloat(data.personal_aktuell || 0) + 
+                                    parseFloat(data.mission_ausgaben_aktuell || 0) + 
+                                    parseFloat(data.sonstige_ausgaben_aktuell || 0);
+      
+      const ausgabenGesamtVorjahr = parseFloat(data.gebaeude_vorjahr || 0) + 
+                                    parseFloat(data.personal_vorjahr || 0) + 
+                                    parseFloat(data.mission_ausgaben_vorjahr || 0) + 
+                                    parseFloat(data.sonstige_ausgaben_vorjahr || 0);
+      
+      const ueberschuss = einnahmenGesamtAktuell - ausgabenGesamtAktuell;
 
-    if (checkResult.rows.length > 0) {
-      // UPDATE
-      await pool.query(`
-        UPDATE quartale SET
-          period_start = $1,
-          period_end = $2,
-          ueberschuss = $3,
-          kontostand_aktuell = $4,
-          kontostand_vorjahr = $5,
-          updated_at = CURRENT_TIMESTAMP
-        WHERE jahr = $6 AND quartal = $7
-      `, [
-        data.period_start,
-        data.period_end,
-        data.einnahmen_gesamt_aktuell - data.ausgaben_gesamt_aktuell,
-        data.kontostand_aktuell,
-        data.kontostand_vorjahr,
-        data.jahr,
-        data.quartal
-      ]);
+      // Prüfen ob Quartal bereits existiert
+      const checkResult = await pool.query(
+        'SELECT id FROM quartale WHERE jahr = $1 AND quartal = $2',
+        [data.jahr, data.quartal]
+      );
 
-      const quartalId = checkResult.rows[0].id;
+      let quartalId;
+      let isUpdate = false;
 
-      // Update Einnahmen
+      if (checkResult.rows.length > 0) {
+        // UPDATE existierendes Quartal
+        isUpdate = true;
+        quartalId = checkResult.rows[0].id;
+        
+        await pool.query(`
+          UPDATE quartale SET
+            period_start = $1,
+            period_end = $2,
+            ueberschuss = $3,
+            kontostand_aktuell = $4,
+            kontostand_vorjahr = $5,
+            updated_at = CURRENT_TIMESTAMP
+          WHERE id = $6
+        `, [
+          data.period_start,
+          data.period_end,
+          ueberschuss,
+          data.kontostand_aktuell || 0,
+          data.kontostand_vorjahr || 0,
+          quartalId
+        ]);
+
+      } else {
+        // INSERT neues Quartal
+        const insertResult = await pool.query(`
+          INSERT INTO quartale (
+            jahr, quartal, period_start, period_end, ueberschuss,
+            kontostand_aktuell, kontostand_vorjahr
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+          RETURNING id
+        `, [
+          data.jahr,
+          data.quartal,
+          data.period_start,
+          data.period_end,
+          ueberschuss,
+          data.kontostand_aktuell || 0,
+          data.kontostand_vorjahr || 0
+        ]);
+
+        quartalId = insertResult.rows[0].id;
+      }
+
+      // UPSERT Einnahmen Kategorien
       await pool.query(`
         INSERT INTO einnahmen_kategorien (
-          quartal_id, spenden_aktuell, spenden_vorjahr,
+          quartal_id, 
+          spenden_aktuell, spenden_vorjahr,
           mission_aktuell, mission_vorjahr,
           sonstige_aktuell, sonstige_vorjahr,
           gesamt_aktuell, gesamt_vorjahr
@@ -146,20 +203,21 @@ exports.handler = async (event, context) => {
           updated_at = CURRENT_TIMESTAMP
       `, [
         quartalId,
-        data.spenden_aktuell,
-        data.spenden_vorjahr,
-        data.mission_einnahmen_aktuell,
-        data.mission_einnahmen_vorjahr,
-        data.sonstige_einnahmen_aktuell,
-        data.sonstige_einnahmen_vorjahr,
-        data.einnahmen_gesamt_aktuell,
-        data.einnahmen_gesamt_vorjahr
+        data.spenden_aktuell || 0,
+        data.spenden_vorjahr || 0,
+        data.mission_einnahmen_aktuell || 0,
+        data.mission_einnahmen_vorjahr || 0,
+        data.sonstige_einnahmen_aktuell || 0,
+        data.sonstige_einnahmen_vorjahr || 0,
+        einnahmenGesamtAktuell,
+        einnahmenGesamtVorjahr
       ]);
 
-      // Update Ausgaben
+      // UPSERT Ausgaben Kategorien
       await pool.query(`
         INSERT INTO ausgaben_kategorien (
-          quartal_id, gebaeude_aktuell, gebaeude_vorjahr,
+          quartal_id,
+          gebaeude_aktuell, gebaeude_vorjahr,
           personal_aktuell, personal_vorjahr,
           sonstige_aktuell, sonstige_vorjahr,
           mission_aktuell, mission_vorjahr,
@@ -179,20 +237,20 @@ exports.handler = async (event, context) => {
           updated_at = CURRENT_TIMESTAMP
       `, [
         quartalId,
-        data.gebaeude_aktuell,
-        data.gebaeude_vorjahr,
-        data.personal_aktuell,
-        data.personal_vorjahr,
-        data.sonstige_ausgaben_aktuell,
-        data.sonstige_ausgaben_vorjahr,
-        data.mission_ausgaben_aktuell,
-        data.mission_ausgaben_vorjahr,
-        data.ausgaben_gesamt_aktuell,
-        data.ausgaben_gesamt_vorjahr
+        data.gebaeude_aktuell || 0,
+        data.gebaeude_vorjahr || 0,
+        data.personal_aktuell || 0,
+        data.personal_vorjahr || 0,
+        data.sonstige_ausgaben_aktuell || 0,
+        data.sonstige_ausgaben_vorjahr || 0,
+        data.mission_ausgaben_aktuell || 0,
+        data.mission_ausgaben_vorjahr || 0,
+        ausgabenGesamtAktuell,
+        ausgabenGesamtVorjahr
       ]);
 
-      // Update Spenderverhalten (falls Tabelle existiert)
-      if (data.regelmaessig_prozent !== undefined) {
+      // UPSERT Spenderverhalten (falls angegeben)
+      if (data.regelmaessig_prozent !== undefined && data.unregelmaessig_prozent !== undefined) {
         await pool.query(`
           INSERT INTO spenderverhalten (
             quartal_id, regelmaessig_prozent, unregelmaessig_prozent
@@ -204,7 +262,7 @@ exports.handler = async (event, context) => {
         `, [quartalId, data.regelmaessig_prozent, data.unregelmaessig_prozent]);
       }
 
-      // Update Quartalsziele
+      // UPSERT Quartalsziele
       await pool.query(`
         INSERT INTO quartalsziele (jahr, quartalsbedarf, visionsbetrag)
         VALUES ($1, $2, $3)
@@ -212,50 +270,68 @@ exports.handler = async (event, context) => {
           quartalsbedarf = EXCLUDED.quartalsbedarf,
           visionsbetrag = EXCLUDED.visionsbetrag,
           updated_at = CURRENT_TIMESTAMP
-      `, [data.jahr, data.quartalsbedarf, data.visionsbetrag]);
+      `, [data.jahr, data.quartalsbedarf || 75000, data.visionsbetrag || 81000]);
 
-    } else {
-      // INSERT (neues Quartal)
-      const insertResult = await pool.query(`
-        INSERT INTO quartale (
-          jahr, quartal, period_start, period_end, ueberschuss,
-          kontostand_aktuell, kontostand_vorjahr
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING id
+      // Jahresübersicht aktualisieren
+      // Alle Quartale des Jahres summieren
+      const jahresSummeResult = await pool.query(`
+        SELECT 
+          COALESCE(SUM(e.gesamt_aktuell), 0) as gesamteinnahmen,
+          COALESCE(SUM(a.gesamt_aktuell), 0) as gesamtausgaben,
+          COALESCE(SUM(q.ueberschuss), 0) as kumuliertes_ergebnis
+        FROM quartale q
+        LEFT JOIN einnahmen_kategorien e ON q.id = e.quartal_id
+        LEFT JOIN ausgaben_kategorien a ON q.id = a.quartal_id
+        WHERE q.jahr = $1
+      `, [data.jahr]);
+
+      const jahresSumme = jahresSummeResult.rows[0];
+
+      await pool.query(`
+        INSERT INTO jahresuebersicht (jahr, gesamteinnahmen, gesamtausgaben, kumuliertes_ergebnis)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (jahr) DO UPDATE SET
+          gesamteinnahmen = EXCLUDED.gesamteinnahmen,
+          gesamtausgaben = EXCLUDED.gesamtausgaben,
+          kumuliertes_ergebnis = EXCLUDED.kumuliertes_ergebnis,
+          updated_at = CURRENT_TIMESTAMP
       `, [
         data.jahr,
-        data.quartal,
-        data.period_start,
-        data.period_end,
-        data.einnahmen_gesamt_aktuell - data.ausgaben_gesamt_aktuell,
-        data.kontostand_aktuell,
-        data.kontostand_vorjahr
+        jahresSumme.gesamteinnahmen,
+        jahresSumme.gesamtausgaben,
+        jahresSumme.kumuliertes_ergebnis
       ]);
 
-      const quartalId = insertResult.rows[0].id;
+      await pool.end();
 
-      // Insert Einnahmen, Ausgaben, Spenderverhalten...
-      // (gleicher Code wie oben beim UPDATE)
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ 
+          success: true,
+          message: `Quartal ${data.quartal}/${data.jahr} erfolgreich ${isUpdate ? 'aktualisiert' : 'gespeichert'}`,
+          data: {
+            jahr: data.jahr,
+            quartal: data.quartal,
+            quartalId: quartalId,
+            ueberschuss: ueberschuss
+          }
+        })
+      };
+
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      await pool.end();
+      
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Datenbankfehler',
+          details: dbError.message
+        })
+      };
     }
-
-    await pool.end();
-    */
-
-    // Für jetzt: Simulation einer erfolgreichen Speicherung
-    console.log('Received quarter data:', data);
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({ 
-        success: true,
-        message: `Quartal ${data.quartal}/${data.jahr} erfolgreich gespeichert`,
-        data: {
-          jahr: data.jahr,
-          quartal: data.quartal
-        }
-      })
-    };
 
   } catch (error) {
     console.error('Error in save-quarter:', error);

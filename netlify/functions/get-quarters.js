@@ -76,85 +76,160 @@ exports.handler = async (event, context) => {
     // Token ist gültig! Jetzt Daten holen
     const jahr = event.queryStringParameters?.jahr || '2025';
 
-    // HIER KOMMT IHRE DATENBANK-LOGIK HIN
-    // Für jetzt simulieren wir die Daten
-    
-    // TODO: Ersetzen Sie dies mit Ihrem echten Datenbank-Aufruf
-    // Beispiel:
-    // const { Pool } = require('pg');
-    // const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    // const result = await pool.query('SELECT * FROM quartale WHERE jahr = $1', [jahr]);
+    // DATABASE_URL prüfen
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
+      console.error('DATABASE_URL not set!');
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Datenbank nicht konfiguriert',
+          details: 'DATABASE_URL Umgebungsvariable fehlt in Netlify'
+        })
+      };
+    }
 
-    // Beispiel-Daten (wie Ihre API sie zurückgibt)
-    const mockData = {
-      quartale: [
-        {
-          quartal: 1,
-          jahr: 2025,
-          period_start: "2025-01-01",
-          period_end: "2025-03-31",
-          ueberschuss: "-3572.49",
-          spenden_aktuell: "42632.15",
-          spenden_vorjahr: "55485.27",
-          mission_einnahmen_aktuell: "2831.41",
-          mission_einnahmen_vorjahr: "2132.75",
-          sonstige_einnahmen_aktuell: "23146.59",
-          sonstige_einnahmen_vorjahr: "22335.76",
-          gesamt_einnahmen_aktuell: "68610.15",
-          gesamt_einnahmen_vorjahr: "79953.78",
-          gebaeude_aktuell: "24159.53",
-          gebaeude_vorjahr: "24104.69",
-          personal_aktuell: "35613.77",
-          personal_vorjahr: "34521.55",
-          mission_ausgaben_aktuell: "2658.00",
-          mission_ausgaben_vorjahr: "3368.74",
-          sonstige_ausgaben_aktuell: "9751.34",
-          sonstige_ausgaben_vorjahr: "9793.13",
-          gesamt_ausgaben_aktuell: "72182.64",
-          gesamt_ausgaben_vorjahr: "71788.11"
-        },
-        {
-          quartal: 2,
-          jahr: 2025,
-          period_start: "2025-04-01",
-          period_end: "2025-06-30",
-          ueberschuss: "-5076.84",
-          spenden_aktuell: "43749.15",
-          spenden_vorjahr: "53548.14",
-          mission_einnahmen_aktuell: "2648.72",
-          mission_einnahmen_vorjahr: "713.90",
-          sonstige_einnahmen_aktuell: "22960.43",
-          sonstige_einnahmen_vorjahr: "27568.09",
-          gesamt_einnahmen_aktuell: "69358.30",
-          gesamt_einnahmen_vorjahr: "81830.13",
-          gebaeude_aktuell: "25080.94",
-          gebaeude_vorjahr: "24745.15",
-          personal_aktuell: "37816.56",
-          personal_vorjahr: "34863.93",
-          mission_ausgaben_aktuell: "2515.51",
-          mission_ausgaben_vorjahr: "1730.00",
-          sonstige_ausgaben_aktuell: "9022.13",
-          sonstige_ausgaben_vorjahr: "13950.15",
-          gesamt_ausgaben_aktuell: "74435.14",
-          gesamt_ausgaben_vorjahr: "75289.23"
-        }
-      ],
-      quartalsziele: {
-        quartalsbedarf: 75000,
-        visionsbetrag: 81000
-      },
-      jahresuebersicht: {
-        kumuliertes_ergebnis: -8649.33,
-        gesamteinnahmen: 137968.45,
-        gesamtausgaben: 146617.78
+    // PostgreSQL Connection
+    const { Pool } = require('pg');
+    const pool = new Pool({ 
+      connectionString: databaseUrl,
+      ssl: { rejectUnauthorized: false }
+    });
+
+    try {
+      // Quartale mit allen Daten laden (JOIN mit einnahmen_kategorien und ausgaben_kategorien)
+      const quartaleResult = await pool.query(`
+        SELECT 
+          q.id,
+          q.jahr,
+          q.quartal,
+          q.period_start,
+          q.period_end,
+          q.ueberschuss,
+          q.kontostand_aktuell,
+          q.kontostand_vorjahr,
+          e.spenden_aktuell,
+          e.spenden_vorjahr,
+          e.mission_aktuell as mission_einnahmen_aktuell,
+          e.mission_vorjahr as mission_einnahmen_vorjahr,
+          e.sonstige_aktuell as sonstige_einnahmen_aktuell,
+          e.sonstige_vorjahr as sonstige_einnahmen_vorjahr,
+          e.gesamt_aktuell as gesamt_einnahmen_aktuell,
+          e.gesamt_vorjahr as gesamt_einnahmen_vorjahr,
+          a.gebaeude_aktuell,
+          a.gebaeude_vorjahr,
+          a.personal_aktuell,
+          a.personal_vorjahr,
+          a.mission_aktuell as mission_ausgaben_aktuell,
+          a.mission_vorjahr as mission_ausgaben_vorjahr,
+          a.sonstige_aktuell as sonstige_ausgaben_aktuell,
+          a.sonstige_vorjahr as sonstige_ausgaben_vorjahr,
+          a.gesamt_aktuell as gesamt_ausgaben_aktuell,
+          a.gesamt_vorjahr as gesamt_ausgaben_vorjahr
+        FROM quartale q
+        LEFT JOIN einnahmen_kategorien e ON q.id = e.quartal_id
+        LEFT JOIN ausgaben_kategorien a ON q.id = a.quartal_id
+        WHERE q.jahr = $1
+        ORDER BY q.quartal
+      `, [jahr]);
+
+      const quartale = quartaleResult.rows.map(row => ({
+        quartal: row.quartal,
+        jahr: row.jahr,
+        period_start: row.period_start,
+        period_end: row.period_end,
+        ueberschuss: row.ueberschuss,
+        kontostand_aktuell: row.kontostand_aktuell,
+        kontostand_vorjahr: row.kontostand_vorjahr,
+        spenden_aktuell: row.spenden_aktuell || 0,
+        spenden_vorjahr: row.spenden_vorjahr || 0,
+        mission_einnahmen_aktuell: row.mission_einnahmen_aktuell || 0,
+        mission_einnahmen_vorjahr: row.mission_einnahmen_vorjahr || 0,
+        sonstige_einnahmen_aktuell: row.sonstige_einnahmen_aktuell || 0,
+        sonstige_einnahmen_vorjahr: row.sonstige_einnahmen_vorjahr || 0,
+        gesamt_einnahmen_aktuell: row.gesamt_einnahmen_aktuell || 0,
+        gesamt_einnahmen_vorjahr: row.gesamt_einnahmen_vorjahr || 0,
+        gebaeude_aktuell: row.gebaeude_aktuell || 0,
+        gebaeude_vorjahr: row.gebaeude_vorjahr || 0,
+        personal_aktuell: row.personal_aktuell || 0,
+        personal_vorjahr: row.personal_vorjahr || 0,
+        mission_ausgaben_aktuell: row.mission_ausgaben_aktuell || 0,
+        mission_ausgaben_vorjahr: row.mission_ausgaben_vorjahr || 0,
+        sonstige_ausgaben_aktuell: row.sonstige_ausgaben_aktuell || 0,
+        sonstige_ausgaben_vorjahr: row.sonstige_ausgaben_vorjahr || 0,
+        gesamt_ausgaben_aktuell: row.gesamt_ausgaben_aktuell || 0,
+        gesamt_ausgaben_vorjahr: row.gesamt_ausgaben_vorjahr || 0
+      }));
+
+      // Quartalsziele laden
+      const zieleResult = await pool.query(`
+        SELECT quartalsbedarf, visionsbetrag
+        FROM quartalsziele
+        WHERE jahr = $1
+        LIMIT 1
+      `, [jahr]);
+
+      const quartalsziele = zieleResult.rows.length > 0 
+        ? zieleResult.rows[0]
+        : { quartalsbedarf: 75000, visionsbetrag: 81000 };
+
+      // Jahresübersicht laden
+      const jahresResult = await pool.query(`
+        SELECT gesamteinnahmen, gesamtausgaben, kumuliertes_ergebnis
+        FROM jahresuebersicht
+        WHERE jahr = $1
+        LIMIT 1
+      `, [jahr]);
+
+      let jahresuebersicht;
+      
+      if (jahresResult.rows.length > 0) {
+        jahresuebersicht = jahresResult.rows[0];
+      } else {
+        // Falls keine Jahresübersicht existiert, aus Quartalen berechnen
+        let kumuliertes_ergebnis = 0;
+        let gesamteinnahmen = 0;
+        let gesamtausgaben = 0;
+
+        quartale.forEach(q => {
+          kumuliertes_ergebnis += parseFloat(q.ueberschuss || 0);
+          gesamteinnahmen += parseFloat(q.gesamt_einnahmen_aktuell || 0);
+          gesamtausgaben += parseFloat(q.gesamt_ausgaben_aktuell || 0);
+        });
+
+        jahresuebersicht = {
+          kumuliertes_ergebnis,
+          gesamteinnahmen,
+          gesamtausgaben
+        };
       }
-    };
 
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(mockData)
-    };
+      await pool.end();
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          quartale,
+          quartalsziele,
+          jahresuebersicht
+        })
+      };
+
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      await pool.end();
+      
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Datenbankfehler',
+          details: dbError.message
+        })
+      };
+    }
 
   } catch (error) {
     console.error('Error in get-quarters:', error);
