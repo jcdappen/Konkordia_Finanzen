@@ -255,31 +255,8 @@
             font-size: 1.8rem;
             font-weight: bold;
             color: white;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-style: italic;
-        }
-
-        .quarter-status {
-            margin-bottom: 10px;
-        }
-
-        .status-item {
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-style: italic;
-        }
-
-        .status-achieved {
-            background: rgba(39, 174, 96, 0.4);
-            color: white;
-        }
-
-        .status-not-achieved {
-            background: rgba(0, 0, 0, 0.2);
-            color: rgba(255,255,255,0.8);
         }
 
         .quarter-result-label {
@@ -542,6 +519,11 @@
             <div class="header-actions">
                 <button onclick="logout()" class="btn btn-logout">🚪 Abmelden</button>
                 <button onclick="openInfoModal()" class="btn btn-info">📖 Erklärung der Finanzposten</button>
+            </div>
+            <div style="max-width: 800px; margin: 20px auto 0; padding: 15px 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <p style="color: #666; font-size: 0.95rem; line-height: 1.6; margin: 0; text-align: center;">
+                    Die dargestellten Zahlen sind ohne Gewähr und können sich durch Veränderungen oder Nachbuchungen noch ändern. Der fixe Quartalsbedarf liegt bei <strong style="color: #bb2232;">75.000 €</strong>, der Visionsbedarf bei <strong style="color: #bb2232;">81.000 €</strong>.
+                </p>
             </div>
         </div>
 
@@ -898,19 +880,9 @@
                 if (quarter) {
                     const ueberschuss = parseNumber(quarter.ueberschuss);
                     const ueberschussVorjahr = parseNumber(quarter.gesamt_einnahmen_vorjahr) - parseNumber(quarter.gesamt_ausgaben_vorjahr);
-                    const quarterlyGoalAchieved = ueberschuss >= parseNumber(quartalsziele.quartalsbedarf);
-                    const visionGoalAchieved = ueberschuss >= parseNumber(quartalsziele.visionsbetrag);
 
                     card.innerHTML = `
                         <div class="quarter-number">${quarterNames[i]}</div>
-                        <div class="quarter-status">
-                            <div class="status-item ${quarterlyGoalAchieved ? 'status-achieved' : 'status-not-achieved'}">
-                                Quartalsbedarf ${quarterlyGoalAchieved ? 'erreicht' : 'nicht erreicht'}
-                            </div>
-                            <div class="status-item ${visionGoalAchieved ? 'status-achieved' : 'status-not-achieved'}">
-                                Visionsbedarf ${visionGoalAchieved ? 'erreicht' : 'nicht erreicht'}
-                            </div>
-                        </div>
                         <div class="quarter-result-label">Ergebnis</div>
                         <div class="quarter-result-value ${ueberschuss >= 0 ? 'positive' : 'negative'}">
                             ${formatCurrency(ueberschuss)}
