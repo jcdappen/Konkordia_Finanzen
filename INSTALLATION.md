@@ -139,5 +139,24 @@ Ihr Dashboard ist jetzt sicher geschützt mit:
 - ✅ JWT-Tokens
 - ✅ Automatischem Token-Ablauf
 - ✅ Geschützten API-Endpoints
+- ✅ Admin-Seite zum Eingeben der Quartalsdaten
+
+## 📝 Admin-Seite verwenden
+
+Die Admin-Seite ist unter `/admin.html` erreichbar.
+
+**Zugriff:**
+1. Gehen Sie zu: `https://ihre-domain.netlify.app/admin.html`
+2. Melden Sie sich mit dem gleichen Passwort wie im Dashboard an
+3. Geben Sie Quartalsdaten ein
+4. Klicken Sie auf "Quartalsdaten speichern"
+
+**Features der Admin-Seite:**
+- ✅ Automatische Berechnungen (Gesamtsummen, Überschuss)
+- ✅ Eingabe für aktuelles Jahr und Vorjahr
+- ✅ Quartalsziele konfigurierbar
+- ✅ Spenderverhalten-Prozentsätze
+- ✅ Link zurück zum Dashboard
+- ✅ Sichere Authentifizierung (gleicher Token wie Dashboard)
 
 Bei Fragen oder Problemen: Überprüfen Sie die Netlify Function Logs!

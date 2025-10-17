@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quartalsdaten eingeben</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667292 0%, #2c3e50 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .login-box h1 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .login-box input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: #667292;
+        }
+
+        .login-box button {
+            padding: 15px 40px;
+            background: #667292;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-box button:hover {
+            background: #5a6580;
+            transform: translateY(-2px);
+        }
+
+        .login-box button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667292;
+        }
+
+        .form-group input[readonly] {
+            background: #f8f9fa;
+            color: #666;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .input-hint {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .calculated {
+            background: #e8f5e8 !important;
+            font-weight: bold;
+        }
+
+        .save-button {
+            width: 100%;
+            padding: 18px;
+            background: #667292;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .save-button:hover {
+            background: #5a6580;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 114, 146, 0.3);
+        }
+
+        .save-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #e8f5e8;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+
+        .message.error {
+            background: #fdf2f2;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+
+        .logout-btn {
+            position: absolute;
+            right: 30px;
+            top: 30px;
+            background: #e74c3c;
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .dashboard-link {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            background: #667292;
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .dashboard-link:hover {
+            background: #5a6580;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .logout-btn, .dashboard-link {
+                position: static;
+                display: inline-block;
+                margin: 10px 5px;
+            }
+
+            .header {
+                padding-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login -->
+    <div class="container" id="loginContainer">
+        <div class="login-box">
+            <h1>🔐 Admin Login</h1>
+            <p style="color: #666; margin-bottom: 20px;">Sichere Anmeldung für Administrator</p>
+            <input 
+                type="password" 
+                id="loginPassword" 
+                placeholder="Admin-Passwort eingeben"
+                autocomplete="current-password"
+            />
+            <br>
+            <button onclick="login()" id="loginBtn">Anmelden</button>
+            <div id="loginMessage" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="container admin-panel" id="adminPanel">
+        <div class="header">
+            <a href="/" class="dashboard-link">📊 Zum Dashboard</a>
+            <button class="logout-btn" onclick="logout()">🚪 Abmelden</button>
+            <h1>📊 Quartalsdaten Eingabe</h1>
+            <p>Geben Sie die Finanzdaten für ein Quartal ein</p>
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <form id="quarterForm" onsubmit="saveQuarter(event)">
+            <!-- Grunddaten -->
+            <div class="form-section">
+                <h2>📅 Quartal Auswahl</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Jahr</label>
+                        <input type="number" id="jahr" value="2025" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Quartal</label>
+                        <select id="quartal" required>
+                            <option value="1">Q1 (Januar - März)</option>
+                            <option value="2">Q2 (April - Juni)</option>
+                            <option value="3">Q3 (Juli - September)</option>
+                            <option value="4">Q4 (Oktober - Dezember)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Startdatum</label>
+                        <input type="date" id="period_start" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Enddatum</label>
+                        <input type="date" id="period_end" required />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quartalsziele -->
+            <div class="form-section">
+                <h2>🎯 Quartalsziele</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Quartalsbedarf (€)</label>
+                        <input type="number" step="0.01" id="quartalsbedarf" value="75000" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Visionsbetrag (€)</label>
+                        <input type="number" step="0.01" id="visionsbetrag" value="81000" required />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Einnahmen -->
+            <div class="form-section">
+                <h2>📈 Einnahmen</h2>
+                
+                <h3 style="margin: 20px 0 10px 0; color: #666;">Spenden</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="number" step="0.01" id="spenden_aktuell" value="0" oninput="calculateTotals()" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="number" step="0.01" id="spenden_vorjahr" value="0" oninput="calculateTotals()" required />
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: #666;">Mission</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="number" step="0.01" id="mission_einnahmen_aktuell" value="0" oninput="calculateTotals()" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="number" step="0.01" id="mission_einnahmen_vorjahr" value="0" oninput="calculateTotals()" required />
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: #666;">Sonstige</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="number" step="0.01" id="sonstige_einnahmen_aktuell" value="0" oninput="calculateTotals()" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="number" step="0.01" id="sonstige_einnahmen_vorjahr" value="0" oninput="calculateTotals()" required />
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: #27ae60;">Gesamt Einnahmen</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="text" id="einnahmen_gesamt_aktuell" readonly class="calculated" value="0.00" />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="text" id="einnahmen_gesamt_vorjahr" readonly class="calculated" value="0.00" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ausgaben -->
+            <div class="form-section">
+                <h2>📉 Ausgaben</h2>
+                
+                <h3 style="margin: 20px 0 10px 0; color: #666;">Gebäude</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="number" step="0.01" id="gebaeude_aktuell" value="0" oninput="calculateTotals()" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="number" step="0.01" id="gebaeude_vorjahr" value="0" oninput="calculateTotals()" required />
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: #666;">Personal</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="number" step="0.01" id="personal_aktuell" value="0" oninput="calculateTotals()" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="number" step="0.01" id="personal_vorjahr" value="0" oninput="calculateTotals()" required />
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: #666;">Sonstige</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="number" step="0.01" id="sonstige_ausgaben_aktuell" value="0" oninput="calculateTotals()" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="number" step="0.01" id="sonstige_ausgaben_vorjahr" value="0" oninput="calculateTotals()" required />
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: #666;">Mission</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="number" step="0.01" id="mission_ausgaben_aktuell" value="0" oninput="calculateTotals()" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="number" step="0.01" id="mission_ausgaben_vorjahr" value="0" oninput="calculateTotals()" required />
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: #e74c3c;">Gesamt Ausgaben</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="text" id="ausgaben_gesamt_aktuell" readonly class="calculated" value="0.00" />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="text" id="ausgaben_gesamt_vorjahr" readonly class="calculated" value="0.00" />
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px 0; color: #667292;">Überschuss / Unterdeckung</h3>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Aktuelles Jahr (€)</label>
+                        <input type="text" id="ueberschuss_aktuell" readonly class="calculated" value="0.00" />
+                    </div>
+                    <div class="form-group">
+                        <label>Vorjahr (€)</label>
+                        <input type="text" id="ueberschuss_vorjahr" readonly class="calculated" value="0.00" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kontostände -->
+            <div class="form-section">
+                <h2>💰 Kontostände</h2>
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Kontostand aktuelles Jahr (€)</label>
+                        <input type="number" step="0.01" id="kontostand_aktuell" value="0" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Kontostand Vorjahr (€)</label>
+                        <input type="number" step="0.01" id="kontostand_vorjahr" value="0" required />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spenderverhalten -->
+            <div class="form-section">
+                <h2>👥 Spenderverhalten</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Regelmäßig (%)</label>
+                        <input type="number" step="0.01" min="0" max="100" id="regelmaessig_prozent" value="0" oninput="updateUnregelmaessig()" required />
+                        <span class="input-hint">Automatisch berechnet: Unregelmäßig = 100% - Regelmäßig</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Unregelmäßig (%)</label>
+                        <input type="number" step="0.01" id="unregelmaessig_prozent" readonly class="calculated" value="100" required />
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="save-button" id="saveButton">
+                💾 Quartalsdaten speichern
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const CONFIG = {
+            apiBaseUrl: "/api"
+        };
+
+        // Token prüfen beim Laden
+        window.addEventListener('DOMContentLoaded', checkExistingToken);
+
+        function checkExistingToken() {
+            const token = sessionStorage.getItem('authToken');
+            if (token) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+            }
+        }
+
+        // Login
+        async function login() {
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const messageDiv = document.getElementById('loginMessage');
+
+            if (!password) {
+                messageDiv.textContent = 'Bitte Passwort eingeben';
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Wird überprüft...';
+            messageDiv.textContent = '';
+
+            try {
+                const response = await fetch(`${CONFIG.apiBaseUrl}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    sessionStorage.setItem('authToken', data.token);
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                } else {
+                    messageDiv.textContent = data.message || 'Falsches Passwort';
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Anmelden';
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                messageDiv.textContent = 'Verbindungsfehler. Bitte versuchen Sie es erneut.';
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Anmelden';
+            }
+        }
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('authToken');
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // Enter-Taste für Login
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('loginPassword');
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        login();
+                    }
+                });
+            }
+        });
+
+        // Berechnungen
+        function calculateTotals() {
+            // Einnahmen Aktuell
+            const spendenAktuell = parseFloat(document.getElementById('spenden_aktuell').value) || 0;
+            const missionEinnahmenAktuell = parseFloat(document.getElementById('mission_einnahmen_aktuell').value) || 0;
+            const sonstigeEinnahmenAktuell = parseFloat(document.getElementById('sonstige_einnahmen_aktuell').value) || 0;
+            const einnahmenGesamtAktuell = spendenAktuell + missionEinnahmenAktuell + sonstigeEinnahmenAktuell;
+
+            // Einnahmen Vorjahr
+            const spendenVorjahr = parseFloat(document.getElementById('spenden_vorjahr').value) || 0;
+            const missionEinnahmenVorjahr = parseFloat(document.getElementById('mission_einnahmen_vorjahr').value) || 0;
+            const sonstigeEinnahmenVorjahr = parseFloat(document.getElementById('sonstige_einnahmen_vorjahr').value) || 0;
+            const einnahmenGesamtVorjahr = spendenVorjahr + missionEinnahmenVorjahr + sonstigeEinnahmenVorjahr;
+
+            // Ausgaben Aktuell
+            const gebäudeAktuell = parseFloat(document.getElementById('gebaeude_aktuell').value) || 0;
+            const personalAktuell = parseFloat(document.getElementById('personal_aktuell').value) || 0;
+            const sonstigeAusgabenAktuell = parseFloat(document.getElementById('sonstige_ausgaben_aktuell').value) || 0;
+            const missionAusgabenAktuell = parseFloat(document.getElementById('mission_ausgaben_aktuell').value) || 0;
+            const ausgabenGesamtAktuell = gebäudeAktuell + personalAktuell + sonstigeAusgabenAktuell + missionAusgabenAktuell;
+
+            // Ausgaben Vorjahr
+            const gebäudeVorjahr = parseFloat(document.getElementById('gebaeude_vorjahr').value) || 0;
+            const personalVorjahr = parseFloat(document.getElementById('personal_vorjahr').value) || 0;
+            const sonstigeAusgabenVorjahr = parseFloat(document.getElementById('sonstige_ausgaben_vorjahr').value) || 0;
+            const missionAusgabenVorjahr = parseFloat(document.getElementById('mission_ausgaben_vorjahr').value) || 0;
+            const ausgabenGesamtVorjahr = gebäudeVorjahr + personalVorjahr + sonstigeAusgabenVorjahr + missionAusgabenVorjahr;
+
+            // Überschuss
+            const ueberschussAktuell = einnahmenGesamtAktuell - ausgabenGesamtAktuell;
+            const ueberschussVorjahr = einnahmenGesamtVorjahr - ausgabenGesamtVorjahr;
+
+            // Werte setzen
+            document.getElementById('einnahmen_gesamt_aktuell').value = einnahmenGesamtAktuell.toFixed(2);
+            document.getElementById('einnahmen_gesamt_vorjahr').value = einnahmenGesamtVorjahr.toFixed(2);
+            document.getElementById('ausgaben_gesamt_aktuell').value = ausgabenGesamtAktuell.toFixed(2);
+            document.getElementById('ausgaben_gesamt_vorjahr').value = ausgabenGesamtVorjahr.toFixed(2);
+            document.getElementById('ueberschuss_aktuell').value = ueberschussAktuell.toFixed(2);
+            document.getElementById('ueberschuss_vorjahr').value = ueberschussVorjahr.toFixed(2);
+        }
+
+        function updateUnregelmaessig() {
+            const regelmaessig = parseFloat(document.getElementById('regelmaessig_prozent').value) || 0;
+            const unregelmaessig = 100 - regelmaessig;
+            document.getElementById('unregelmaessig_prozent').value = unregelmaessig.toFixed(2);
+        }
+
+        // Formular absenden
+        async function saveQuarter(event) {
+            event.preventDefault();
+
+            const button = document.getElementById('saveButton');
+            button.disabled = true;
+            button.textContent = '⏳ Speichere...';
+
+            const token = sessionStorage.getItem('authToken');
+
+            if (!token) {
+                showMessage('error', '❌ Sitzung abgelaufen. Bitte neu anmelden.');
+                logout();
+                return;
+            }
+
+            // Alle berechneten Werte aktualisieren
+            calculateTotals();
+
+            const formData = {
+                jahr: parseInt(document.getElementById('jahr').value),
+                quartal: parseInt(document.getElementById('quartal').value),
+                period_start: document.getElementById('period_start').value,
+                period_end: document.getElementById('period_end').value,
+                quartalsbedarf: parseFloat(document.getElementById('quartalsbedarf').value),
+                visionsbetrag: parseFloat(document.getElementById('visionsbetrag').value),
+                spenden_aktuell: parseFloat(document.getElementById('spenden_aktuell').value),
+                spenden_vorjahr: parseFloat(document.getElementById('spenden_vorjahr').value),
+                mission_einnahmen_aktuell: parseFloat(document.getElementById('mission_einnahmen_aktuell').value),
+                mission_einnahmen_vorjahr: parseFloat(document.getElementById('mission_einnahmen_vorjahr').value),
+                sonstige_einnahmen_aktuell: parseFloat(document.getElementById('sonstige_einnahmen_aktuell').value),
+                sonstige_einnahmen_vorjahr: parseFloat(document.getElementById('sonstige_einnahmen_vorjahr').value),
+                einnahmen_gesamt_aktuell: parseFloat(document.getElementById('einnahmen_gesamt_aktuell').value),
+                einnahmen_gesamt_vorjahr: parseFloat(document.getElementById('einnahmen_gesamt_vorjahr').value),
+                gebaeude_aktuell: parseFloat(document.getElementById('gebaeude_aktuell').value),
+                gebaeude_vorjahr: parseFloat(document.getElementById('gebaeude_vorjahr').value),
+                personal_aktuell: parseFloat(document.getElementById('personal_aktuell').value),
+                personal_vorjahr: parseFloat(document.getElementById('personal_vorjahr').value),
+                sonstige_ausgaben_aktuell: parseFloat(document.getElementById('sonstige_ausgaben_aktuell').value),
+                sonstige_ausgaben_vorjahr: parseFloat(document.getElementById('sonstige_ausgaben_vorjahr').value),
+                mission_ausgaben_aktuell: parseFloat(document.getElementById('mission_ausgaben_aktuell').value),
+                mission_ausgaben_vorjahr: parseFloat(document.getElementById('mission_ausgaben_vorjahr').value),
+                ausgaben_gesamt_aktuell: parseFloat(document.getElementById('ausgaben_gesamt_aktuell').value),
+                ausgaben_gesamt_vorjahr: parseFloat(document.getElementById('ausgaben_gesamt_vorjahr').value),
+                kontostand_aktuell: parseFloat(document.getElementById('kontostand_aktuell').value),
+                kontostand_vorjahr: parseFloat(document.getElementById('kontostand_vorjahr').value),
+                regelmaessig_prozent: parseFloat(document.getElementById('regelmaessig_prozent').value),
+                unregelmaessig_prozent: parseFloat(document.getElementById('unregelmaessig_prozent').value)
+            };
+
+            try {
+                const response = await fetch(`${CONFIG.apiBaseUrl}/save-quarter`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.status === 401) {
+                    showMessage('error', '❌ Sitzung abgelaufen. Bitte neu anmelden.');
+                    logout();
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage('success', '✅ ' + result.message);
+                } else {
+                    showMessage('error', '❌ Fehler: ' + (result.error || 'Unbekannter Fehler'));
+                }
+            } catch (error) {
+                showMessage('error', '❌ Verbindungsfehler: ' + error.message);
+            } finally {
+                button.disabled = false;
+                button.textContent = '💾 Quartalsdaten speichern';
+            }
+        }
+
+        function showMessage(type, text) {
+            const container = document.getElementById('messageContainer');
+            container.innerHTML = `<div class="message ${type}">${text}</div>`;
+            
+            // Scroll nach oben
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Nach 5 Sekunden ausblenden
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Initial calculations
+        calculateTotals();
+    </script>
+</body>
+</html>
