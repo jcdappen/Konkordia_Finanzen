@@ -210,6 +210,21 @@ exports.handler = async (event, context) => {
         };
       }
 
+      // Vorjahr-Summen aus Quartalen berechnen
+      let gesamteinnahmen_vorjahr = 0;
+      let gesamtausgaben_vorjahr = 0;
+      
+      quartale.forEach(q => {
+        gesamteinnahmen_vorjahr += parseFloat(q.gesamt_einnahmen_vorjahr || 0);
+        gesamtausgaben_vorjahr += parseFloat(q.gesamt_ausgaben_vorjahr || 0);
+      });
+      
+      const kumuliertes_ergebnis_vorjahr = gesamteinnahmen_vorjahr - gesamtausgaben_vorjahr;
+      
+      jahresuebersicht.gesamteinnahmen_vorjahr = gesamteinnahmen_vorjahr;
+      jahresuebersicht.gesamtausgaben_vorjahr = gesamtausgaben_vorjahr;
+      jahresuebersicht.kumuliertes_ergebnis_vorjahr = kumuliertes_ergebnis_vorjahr;
+
       await pool.end();
 
       return {

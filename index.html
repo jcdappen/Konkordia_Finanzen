@@ -203,12 +203,20 @@
             color: white;
         }
 
-        .year-stat-value.negative {
+        .year-stat-value-small {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .year-stat-value.negative,
+        .year-stat-value-small.negative {
             color: #fff;
             opacity: 0.9;
         }
 
-        .year-stat-value.positive {
+        .year-stat-value.positive,
+        .year-stat-value-small.positive {
             color: #fff;
         }
 
@@ -287,12 +295,20 @@
             color: white;
         }
 
-        .quarter-result-value.negative {
+        .quarter-result-value-small {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .quarter-result-value.negative,
+        .quarter-result-value-small.negative {
             color: white;
             opacity: 0.9;
         }
 
-        .quarter-result-value.positive {
+        .quarter-result-value.positive,
+        .quarter-result-value-small.positive {
             color: white;
         }
 
@@ -541,14 +557,20 @@
                     <div class="year-stat">
                         <div class="year-stat-label">Kumuliertes Ergebnis</div>
                         <div class="year-stat-value" id="yearResult">-</div>
+                        <div class="year-stat-label" style="font-size: 0.8rem; margin-top: 5px;">Vorjahr</div>
+                        <div class="year-stat-value-small" id="yearResultPrev">-</div>
                     </div>
                     <div class="year-stat">
                         <div class="year-stat-label">Gesamteinnahmen</div>
                         <div class="year-stat-value positive" id="yearIncome">-</div>
+                        <div class="year-stat-label" style="font-size: 0.8rem; margin-top: 5px;">Vorjahr</div>
+                        <div class="year-stat-value-small" id="yearIncomePrev">-</div>
                     </div>
                     <div class="year-stat">
                         <div class="year-stat-label">Gesamtausgaben</div>
                         <div class="year-stat-value negative" id="yearExpenses">-</div>
+                        <div class="year-stat-label" style="font-size: 0.8rem; margin-top: 5px;">Vorjahr</div>
+                        <div class="year-stat-value-small" id="yearExpensesPrev">-</div>
                     </div>
                 </div>
                 <div class="click-hint">Klicken für Details</div>
@@ -848,10 +870,18 @@
 
         function updateYearOverview() {
             const ergebnis = parseNumber(jahresuebersicht.kumuliertes_ergebnis);
+            const ergebnisVorjahr = parseNumber(jahresuebersicht.kumuliertes_ergebnis_vorjahr);
+            
             document.getElementById('yearResult').textContent = formatCurrency(ergebnis);
             document.getElementById('yearResult').className = 'year-stat-value ' + (ergebnis >= 0 ? 'positive' : 'negative');
             document.getElementById('yearIncome').textContent = formatCurrency(jahresuebersicht.gesamteinnahmen);
             document.getElementById('yearExpenses').textContent = formatCurrency(jahresuebersicht.gesamtausgaben);
+            
+            // Vorjahr
+            document.getElementById('yearResultPrev').textContent = formatCurrency(ergebnisVorjahr);
+            document.getElementById('yearResultPrev').className = 'year-stat-value-small ' + (ergebnisVorjahr >= 0 ? 'positive' : 'negative');
+            document.getElementById('yearIncomePrev').textContent = formatCurrency(jahresuebersicht.gesamteinnahmen_vorjahr);
+            document.getElementById('yearExpensesPrev').textContent = formatCurrency(jahresuebersicht.gesamtausgaben_vorjahr);
         }
 
         function renderQuarters() {
@@ -867,6 +897,7 @@
                 
                 if (quarter) {
                     const ueberschuss = parseNumber(quarter.ueberschuss);
+                    const ueberschussVorjahr = parseNumber(quarter.gesamt_einnahmen_vorjahr) - parseNumber(quarter.gesamt_ausgaben_vorjahr);
                     const quarterlyGoalAchieved = ueberschuss >= parseNumber(quartalsziele.quartalsbedarf);
                     const visionGoalAchieved = ueberschuss >= parseNumber(quartalsziele.visionsbetrag);
 
@@ -874,15 +905,19 @@
                         <div class="quarter-number">${quarterNames[i]}</div>
                         <div class="quarter-status">
                             <div class="status-item ${quarterlyGoalAchieved ? 'status-achieved' : 'status-not-achieved'}">
-                                ${quarterlyGoalAchieved ? 'Quartalsbedarf erreicht' : 'Quartalsbedarf erreicht'}
+                                Quartalsbedarf ${quarterlyGoalAchieved ? 'erreicht' : 'nicht erreicht'}
                             </div>
                             <div class="status-item ${visionGoalAchieved ? 'status-achieved' : 'status-not-achieved'}">
-                                ${visionGoalAchieved ? 'Visionsbedarf erreicht' : 'Visionsbedarf erreicht'}
+                                Visionsbedarf ${visionGoalAchieved ? 'erreicht' : 'nicht erreicht'}
                             </div>
                         </div>
                         <div class="quarter-result-label">Ergebnis</div>
                         <div class="quarter-result-value ${ueberschuss >= 0 ? 'positive' : 'negative'}">
                             ${formatCurrency(ueberschuss)}
+                        </div>
+                        <div class="quarter-result-label" style="font-size: 0.8rem; margin-top: 8px;">Vorjahr</div>
+                        <div class="quarter-result-value-small ${ueberschussVorjahr >= 0 ? 'positive' : 'negative'}">
+                            ${formatCurrency(ueberschussVorjahr)}
                         </div>
                         <div class="quarter-hint">Klicke für details</div>
                     `;
