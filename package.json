@@ -1,8 +1,11 @@
 {
-  "name": "konkordia-finanzen",
+  "name": "finanz-dashboard",
   "version": "1.0.0",
-  "description": "Finanz Dashboard",
+  "description": "Sicheres Finanz-Dashboard mit Authentifizierung",
+  "scripts": {
+    "build": "echo 'No build needed'"
+  },
   "dependencies": {
-    "@neondatabase/serverless": "^0.9.0"
+    "jsonwebtoken": "^9.0.2"
   }
 }
