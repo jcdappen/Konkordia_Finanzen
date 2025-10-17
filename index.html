@@ -539,20 +539,14 @@
                     <div class="year-stat">
                         <div class="year-stat-label">Kumuliertes Ergebnis</div>
                         <div class="year-stat-value" id="yearResult">-</div>
-                        <div class="year-stat-label" style="font-size: 0.8rem; margin-top: 5px;">Vorjahr</div>
-                        <div class="year-stat-value-small" id="yearResultPrev">-</div>
                     </div>
                     <div class="year-stat">
                         <div class="year-stat-label">Gesamteinnahmen</div>
                         <div class="year-stat-value positive" id="yearIncome">-</div>
-                        <div class="year-stat-label" style="font-size: 0.8rem; margin-top: 5px;">Vorjahr</div>
-                        <div class="year-stat-value-small" id="yearIncomePrev">-</div>
                     </div>
                     <div class="year-stat">
                         <div class="year-stat-label">Gesamtausgaben</div>
                         <div class="year-stat-value negative" id="yearExpenses">-</div>
-                        <div class="year-stat-label" style="font-size: 0.8rem; margin-top: 5px;">Vorjahr</div>
-                        <div class="year-stat-value-small" id="yearExpensesPrev">-</div>
                     </div>
                 </div>
                 <div class="click-hint">Klicken für Details</div>
@@ -852,18 +846,11 @@
 
         function updateYearOverview() {
             const ergebnis = parseNumber(jahresuebersicht.kumuliertes_ergebnis);
-            const ergebnisVorjahr = parseNumber(jahresuebersicht.kumuliertes_ergebnis_vorjahr);
             
             document.getElementById('yearResult').textContent = formatCurrency(ergebnis);
             document.getElementById('yearResult').className = 'year-stat-value ' + (ergebnis >= 0 ? 'positive' : 'negative');
             document.getElementById('yearIncome').textContent = formatCurrency(jahresuebersicht.gesamteinnahmen);
             document.getElementById('yearExpenses').textContent = formatCurrency(jahresuebersicht.gesamtausgaben);
-            
-            // Vorjahr
-            document.getElementById('yearResultPrev').textContent = formatCurrency(ergebnisVorjahr);
-            document.getElementById('yearResultPrev').className = 'year-stat-value-small ' + (ergebnisVorjahr >= 0 ? 'positive' : 'negative');
-            document.getElementById('yearIncomePrev').textContent = formatCurrency(jahresuebersicht.gesamteinnahmen_vorjahr);
-            document.getElementById('yearExpensesPrev').textContent = formatCurrency(jahresuebersicht.gesamtausgaben_vorjahr);
         }
 
         function renderQuarters() {
@@ -879,17 +866,12 @@
                 
                 if (quarter) {
                     const ueberschuss = parseNumber(quarter.ueberschuss);
-                    const ueberschussVorjahr = parseNumber(quarter.gesamt_einnahmen_vorjahr) - parseNumber(quarter.gesamt_ausgaben_vorjahr);
 
                     card.innerHTML = `
                         <div class="quarter-number">${quarterNames[i]}</div>
                         <div class="quarter-result-label">Ergebnis</div>
                         <div class="quarter-result-value ${ueberschuss >= 0 ? 'positive' : 'negative'}">
                             ${formatCurrency(ueberschuss)}
-                        </div>
-                        <div class="quarter-result-label" style="font-size: 0.8rem; margin-top: 8px;">Vorjahr</div>
-                        <div class="quarter-result-value-small ${ueberschussVorjahr >= 0 ? 'positive' : 'negative'}">
-                            ${formatCurrency(ueberschussVorjahr)}
                         </div>
                         <div class="quarter-hint">Klicke für details</div>
                     `;
@@ -918,6 +900,9 @@
             let spendenGesamt = 0, missionEinnahmenGesamt = 0, sonstigeEinnahmenGesamt = 0;
             let gebaeudeGesamt = 0, personalGesamt = 0, missionAusgabenGesamt = 0, sonstigeAusgabenGesamt = 0;
             
+            let spendenGesamtVJ = 0, missionEinnahmenGesamtVJ = 0, sonstigeEinnahmenGesamtVJ = 0;
+            let gebaeudeGesamtVJ = 0, personalGesamtVJ = 0, missionAusgabenGesamtVJ = 0, sonstigeAusgabenGesamtVJ = 0;
+            
             quarterData.forEach(q => {
                 spendenGesamt += parseNumber(q.spenden_aktuell);
                 missionEinnahmenGesamt += parseNumber(q.mission_einnahmen_aktuell);
@@ -926,6 +911,14 @@
                 personalGesamt += parseNumber(q.personal_aktuell);
                 missionAusgabenGesamt += parseNumber(q.mission_ausgaben_aktuell);
                 sonstigeAusgabenGesamt += parseNumber(q.sonstige_ausgaben_aktuell);
+                
+                spendenGesamtVJ += parseNumber(q.spenden_vorjahr);
+                missionEinnahmenGesamtVJ += parseNumber(q.mission_einnahmen_vorjahr);
+                sonstigeEinnahmenGesamtVJ += parseNumber(q.sonstige_einnahmen_vorjahr);
+                gebaeudeGesamtVJ += parseNumber(q.gebaeude_vorjahr);
+                personalGesamtVJ += parseNumber(q.personal_vorjahr);
+                missionAusgabenGesamtVJ += parseNumber(q.mission_ausgaben_vorjahr);
+                sonstigeAusgabenGesamtVJ += parseNumber(q.sonstige_ausgaben_vorjahr);
             });
             
             body.innerHTML = `
@@ -935,25 +928,30 @@
                         <thead>
                             <tr>
                                 <th>Kategorie</th>
-                                <th>Betrag</th>
+                                <th>2025</th>
+                                <th>Vorjahr</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Spenden</td>
                                 <td>${formatCurrency(spendenGesamt)}</td>
+                                <td>${formatCurrency(spendenGesamtVJ)}</td>
                             </tr>
                             <tr>
                                 <td>Mission</td>
                                 <td>${formatCurrency(missionEinnahmenGesamt)}</td>
+                                <td>${formatCurrency(missionEinnahmenGesamtVJ)}</td>
                             </tr>
                             <tr>
                                 <td>Sonstige</td>
                                 <td>${formatCurrency(sonstigeEinnahmenGesamt)}</td>
+                                <td>${formatCurrency(sonstigeEinnahmenGesamtVJ)}</td>
                             </tr>
                             <tr class="total-row">
                                 <td>Gesamt Einnahmen</td>
                                 <td>${formatCurrency(jahresuebersicht.gesamteinnahmen)}</td>
+                                <td>${formatCurrency(jahresuebersicht.gesamteinnahmen_vorjahr)}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -965,29 +963,35 @@
                         <thead>
                             <tr>
                                 <th>Kategorie</th>
-                                <th>Betrag</th>
+                                <th>2025</th>
+                                <th>Vorjahr</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Gebäude</td>
                                 <td>${formatCurrency(gebaeudeGesamt)}</td>
+                                <td>${formatCurrency(gebaeudeGesamtVJ)}</td>
                             </tr>
                             <tr>
                                 <td>Personal</td>
                                 <td>${formatCurrency(personalGesamt)}</td>
+                                <td>${formatCurrency(personalGesamtVJ)}</td>
                             </tr>
                             <tr>
                                 <td>Mission</td>
                                 <td>${formatCurrency(missionAusgabenGesamt)}</td>
+                                <td>${formatCurrency(missionAusgabenGesamtVJ)}</td>
                             </tr>
                             <tr>
                                 <td>Sonstige</td>
                                 <td>${formatCurrency(sonstigeAusgabenGesamt)}</td>
+                                <td>${formatCurrency(sonstigeAusgabenGesamtVJ)}</td>
                             </tr>
                             <tr class="total-row">
                                 <td>Gesamt Ausgaben</td>
                                 <td>${formatCurrency(jahresuebersicht.gesamtausgaben)}</td>
+                                <td>${formatCurrency(jahresuebersicht.gesamtausgaben_vorjahr)}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -996,11 +1000,23 @@
                 <div class="details-section">
                     <h3>💰 Jahresergebnis</h3>
                     <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Jahr</th>
+                                <th>Ergebnis</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr class="total-row">
-                                <td>Kumuliertes Ergebnis 2025</td>
+                                <td>2025</td>
                                 <td class="${parseNumber(jahresuebersicht.kumuliertes_ergebnis) >= 0 ? 'positive' : 'negative'}">
                                     ${formatCurrency(jahresuebersicht.kumuliertes_ergebnis)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Vorjahr</td>
+                                <td class="${parseNumber(jahresuebersicht.kumuliertes_ergebnis_vorjahr) >= 0 ? 'positive' : 'negative'}">
+                                    ${formatCurrency(jahresuebersicht.kumuliertes_ergebnis_vorjahr)}
                                 </td>
                             </tr>
                         </tbody>
