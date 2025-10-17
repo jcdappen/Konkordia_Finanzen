@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667292 0%, #2c3e50 100%);
+            background: #f5f5f5;
             min-height: 100vh;
             color: #333;
         }
@@ -24,6 +24,7 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            background: linear-gradient(135deg, #667292 0%, #2c3e50 100%);
         }
 
         .login-form {
@@ -53,26 +54,27 @@
 
         .login-form input:focus {
             outline: none;
-            border-color: #667292;
-            box-shadow: 0 0 0 3px rgba(102, 114, 146, 0.2);
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
         }
 
         .login-form button {
             width: 100%;
             padding: 15px;
-            background: #667292;
+            background: #d4af37;
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 600;
         }
 
         .login-form button:hover {
-            background: #5a6580;
+            background: #c49d2e;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 114, 146, 0.3);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
         }
 
         .login-form button:disabled {
@@ -97,7 +99,7 @@
 
         .dashboard {
             display: none;
-            padding: 20px;
+            padding: 40px 20px;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -105,57 +107,202 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
-            color: white;
         }
 
         .header h1 {
             font-size: 2.5rem;
+            color: #333;
             margin-bottom: 10px;
         }
 
-        .header .disclaimer {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            font-style: italic;
-            margin-top: 8px;
+        .header-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+        .btn {
             padding: 10px 20px;
             border-radius: 8px;
-            margin-top: 15px;
-            cursor: pointer;
             border: none;
+            cursor: pointer;
             font-size: 0.95rem;
             transition: all 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .info-link {
+            text-decoration: none;
             display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-logout {
+            background: #e74c3c;
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            margin-top: 15px;
-            margin-left: 10px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
+        }
+
+        .btn-logout:hover {
+            background: #c0392b;
+        }
+
+        .btn-info {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #2980b9;
+        }
+
+        /* Jahresübersicht - großer goldener Block */
+        .year-overview {
+            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             cursor: pointer;
-            border: none;
-            font-family: inherit;
+            transition: all 0.3s ease;
         }
 
-        .info-link:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+        .year-overview:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
         }
 
+        .year-overview h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .year-stats {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .year-stat {
+            text-align: center;
+        }
+
+        .year-stat-label {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(0,0,0,0.7);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .year-stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .year-stat-value.negative {
+            color: #c0392b;
+        }
+
+        .year-stat-value.positive {
+            color: #27ae60;
+        }
+
+        .click-hint {
+            text-align: center;
+            color: rgba(0,0,0,0.6);
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-top: 15px;
+        }
+
+        /* Quartals-Grid */
+        .quarters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .quarter-card {
+            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .quarter-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .quarter-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .quarter-status {
+            margin-bottom: 10px;
+        }
+
+        .status-item {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .status-achieved {
+            background: rgba(39, 174, 96, 0.3);
+            color: #27ae60;
+        }
+
+        .status-not-achieved {
+            background: rgba(231, 76, 60, 0.3);
+            color: #c0392b;
+        }
+
+        .quarter-result-label {
+            font-size: 0.95rem;
+            color: rgba(0,0,0,0.7);
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .quarter-result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .quarter-result-value.negative {
+            color: #c0392b;
+        }
+
+        .quarter-result-value.positive {
+            color: #27ae60;
+        }
+
+        .quarter-hint {
+            text-align: center;
+            color: rgba(0,0,0,0.6);
+            font-size: 0.85rem;
+            font-style: italic;
+            margin-top: 15px;
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -164,7 +311,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0.7);
             overflow-y: auto;
             animation: fadeIn 0.3s;
         }
@@ -179,7 +326,7 @@
             margin: 50px auto;
             padding: 0;
             border-radius: 16px;
-            max-width: 900px;
+            max-width: 1000px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideDown 0.3s;
         }
@@ -197,15 +344,15 @@
 
         .modal-header {
             padding: 30px;
-            background: linear-gradient(135deg, #667292 0%, #2c3e50 100%);
-            color: white;
+            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+            color: #333;
             border-radius: 16px 16px 0 0;
             position: relative;
         }
 
         .modal-header h2 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 2rem;
         }
 
         .modal-close {
@@ -214,7 +361,7 @@
             top: 20px;
             font-size: 2rem;
             font-weight: bold;
-            color: white;
+            color: #333;
             cursor: pointer;
             background: none;
             border: none;
@@ -228,7 +375,7 @@
         }
 
         .modal-close:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.1);
             transform: rotate(90deg);
         }
 
@@ -238,198 +385,15 @@
             overflow-y: auto;
         }
 
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.2rem;
-            padding: 40px;
-        }
-
-        .year-summary {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .year-summary h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .summary-item {
-            text-align: center;
-            padding: 20px;
-            border-radius: 12px;
-            background: #f8f9fa;
-        }
-
-        .summary-item.highlight {
-            background: linear-gradient(135deg, #667292 0%, #2c3e50 100%);
-            color: white;
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(102, 114, 146, 0.3);
-        }
-
-        .summary-item.highlight h3 {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .summary-item h3 {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .summary-item .value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .positive { color: #27ae60; }
-        .negative { color: #e74c3c; }
-
-        .quarters-container {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .quarter-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            width: 100%;
-        }
-
-        .quarter-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-        }
-
-        .card-front, .card-back {
-            padding: 30px;
-            min-height: 150px;
-        }
-
-        .card-back {
-            display: none;
-        }
-
-        .quarter-card.detailed .card-front {
-            display: none;
-        }
-
-        .quarter-card.detailed .card-back {
-            display: block;
-        }
-
-        .quarter-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .quarter-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .quarter-period {
-            color: #666;
-            font-size: 1rem;
-        }
-
-        .quarter-overview {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .quarter-result {
-            font-size: 2rem;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .click-hint {
-            text-align: center;
-            color: #999;
-            font-size: 0.85rem;
-            margin-top: 10px;
-            font-style: italic;
-        }
-
-        .goals {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .goal {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border-left: 4px solid transparent;
-        }
-
-        .goal.achieved {
-            border-left-color: #27ae60;
-            background: #e8f5e8;
-        }
-
-        .goal.not-achieved {
-            border-left-color: #e74c3c;
-            background: #fdf2f2;
-        }
-
-        .goal-label {
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-
-        .goal-amount {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 2px;
-        }
-
-        .goal-status {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .achieved { color: #27ae60; }
-        .not-achieved { color: #e74c3c; }
-
         .details-section {
             margin-bottom: 40px;
         }
 
-        .details-section h4 {
-            font-size: 1.3rem;
+        .details-section h3 {
+            font-size: 1.5rem;
             margin-bottom: 20px;
             color: #333;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 3px solid #d4af37;
             padding-bottom: 10px;
         }
 
@@ -448,7 +412,7 @@
             text-align: left;
             font-weight: bold;
             font-size: 1rem;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 2px solid #e9ecef;
         }
 
         .details-table td {
@@ -469,27 +433,16 @@
         }
 
         .details-table .total-row {
-            background-color: #e9ecef;
+            background-color: #fff3cd;
             font-weight: bold;
-            border-top: 2px solid #dee2e6;
+            border-top: 3px solid #d4af37;
         }
 
-        .back-btn {
-            background: #667292;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: #5a6580;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 114, 146, 0.3);
+        .loading {
+            text-align: center;
+            color: #666;
+            font-size: 1.2rem;
+            padding: 40px;
         }
 
         .error {
@@ -501,30 +454,22 @@
             margin: 20px;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
-            .quarter-overview {
-                grid-template-columns: 1fr;
-                gap: 20px;
+            .year-overview {
+                padding: 25px;
             }
-            
-            .quarter-result {
-                font-size: 2.5rem;
+
+            .year-overview h2 {
+                font-size: 1.8rem;
             }
-            
-            .details-table th,
-            .details-table td {
-                padding: 10px 8px;
-                font-size: 0.85rem;
-            }
-            
-            .quarter-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-            
-            .quarter-title {
+
+            .year-stat-value {
                 font-size: 1.5rem;
+            }
+
+            .quarters-grid {
+                grid-template-columns: 1fr;
             }
 
             .modal-content {
@@ -537,17 +482,24 @@
             }
 
             .modal-header h2 {
-                font-size: 1.4rem;
+                font-size: 1.5rem;
                 padding-right: 40px;
             }
 
             .modal-body {
                 padding: 25px;
             }
+
+            .details-table th,
+            .details-table td {
+                padding: 10px 8px;
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Login -->
     <div class="login-container" id="loginContainer">
         <div class="login-form">
             <h1>🔐 Finanz-Dashboard</h1>
@@ -565,13 +517,14 @@
         </div>
     </div>
 
+    <!-- Dashboard -->
     <div class="dashboard" id="dashboard">
         <div class="header">
             <h1>Finanz-Dashboard 2025</h1>
-            <p>Quartalsergebnisse und Jahresübersicht</p>
-            <p class="disclaimer">Alle angegebenen Zahlen sind vorläufige Werte und können sich durch Nachbuchungen oder Korrektungen ändern.</p>
-            <button onclick="logout()" class="logout-btn">🚪 Abmelden</button>
-            <button onclick="openModal()" class="info-link">📖 Erklärung der Finanzposten</button>
+            <div class="header-actions">
+                <button onclick="logout()" class="btn btn-logout">🚪 Abmelden</button>
+                <button onclick="openInfoModal()" class="btn btn-info">📖 Erklärung der Finanzposten</button>
+            </div>
         </div>
 
         <div class="loading" id="loadingIndicator">
@@ -579,309 +532,149 @@
         </div>
 
         <div id="contentContainer" style="display: none;">
-            <div class="year-summary">
+            <!-- Jahresübersicht -->
+            <div class="year-overview" onclick="openYearModal()">
                 <h2>Jahresübersicht 2025</h2>
-                <div class="summary-grid">
-                    <div class="summary-item highlight">
-                        <h3>Kumuliertes Ergebnis</h3>
-                        <div class="value" id="yearResult">-</div>
+                <div class="year-stats">
+                    <div class="year-stat">
+                        <div class="year-stat-label">Kumuliertes Ergebnis</div>
+                        <div class="year-stat-value" id="yearResult">-</div>
                     </div>
-                    <div class="summary-item">
-                        <h3>Gesamteinnahmen</h3>
-                        <div class="value positive" id="yearIncome">-</div>
+                    <div class="year-stat">
+                        <div class="year-stat-label">Gesamteinnahmen</div>
+                        <div class="year-stat-value positive" id="yearIncome">-</div>
                     </div>
-                    <div class="summary-item">
-                        <h3>Gesamtausgaben</h3>
-                        <div class="value negative" id="yearExpenses">-</div>
+                    <div class="year-stat">
+                        <div class="year-stat-label">Gesamtausgaben</div>
+                        <div class="year-stat-value negative" id="yearExpenses">-</div>
                     </div>
                 </div>
+                <div class="click-hint">Klicken für Details</div>
             </div>
 
-            <div class="quarters-container" id="quartersContainer">
-                <!-- Quartals-Karten werden hier dynamisch eingefügt -->
+            <!-- Quartals-Grid -->
+            <div class="quarters-grid" id="quartersGrid">
+                <!-- Wird dynamisch gefüllt -->
             </div>
         </div>
 
-        <!-- Modal für Erklärungen -->
-        <div id="explanationModal" class="modal">
+        <!-- Modal: Jahresdetails -->
+        <div id="yearModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Jahresübersicht 2025 - Details</h2>
+                    <button class="modal-close" onclick="closeYearModal()">&times;</button>
+                </div>
+                <div class="modal-body" id="yearModalBody">
+                    <!-- Wird dynamisch gefüllt -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: Quartalsdetails -->
+        <div id="quarterModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="quarterModalTitle">Quartal X - Details</h2>
+                    <button class="modal-close" onclick="closeQuarterModal()">&times;</button>
+                </div>
+                <div class="modal-body" id="quarterModalBody">
+                    <!-- Wird dynamisch gefüllt -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: Erklärungen -->
+        <div id="infoModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>📖 Erklärung der Finanzposten</h2>
-                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                    <button class="modal-close" onclick="closeInfoModal()">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #667292;">
-                        <p style="color: #555; line-height: 1.6; margin: 0;"><strong>Zweck dieser Übersicht:</strong> Diese Übersicht erklärt, welche konkreten Posten sich hinter den Hauptkategorien im Dashboard verbergen. So können Sie nachvollziehen, wie sich die Gesamtsummen zusammensetzen.</p>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #d4af37;">
+                        <p style="color: #555; line-height: 1.6; margin: 0;"><strong>Zweck dieser Übersicht:</strong> Diese Übersicht erklärt, welche konkreten Posten sich hinter den Hauptkategorien im Dashboard verbergen.</p>
                     </div>
 
                     <div style="margin-bottom: 40px;">
-                        <h3 style="color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #667292; font-size: 1.3rem;">📈 Einnahmen</h3>
+                        <h3 style="color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #d4af37; font-size: 1.3rem;">📈 Einnahmen</h3>
                         
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #667292; margin-bottom: 10px; font-size: 1.1rem;">Spenden</h4>
+                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Spenden</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Spenden allgemein Ertrag
                                 </li>
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Spenden Verzicht a. Erstatt. v. Aufwend.
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #667292; margin-bottom: 10px; font-size: 1.1rem;">Mission</h4>
+                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Mission</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
                                     Spenden zweckgebunden Mission
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #667292; margin-bottom: 10px; font-size: 1.1rem;">Sonstige Einnahmen</h4>
+                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Sonstige Einnahmen</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Spenden Komm. Mitarbeiter
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Einnahme aus Untervermietung
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Medien Einnahmen
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    FSQ Regio SW Veranstaltungen Einnahmen
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Gemeindefreizeit Einnahmen
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Zinserträge
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Sonstige Erträge
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Erträge a. Weiterberech. Verwaltungsaufwand
+                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    Weitere Einnahmen (Medien, Zinserträge, Untervermietung, etc.)
                                 </li>
                             </ul>
                         </div>
                     </div>
 
                     <div style="margin-bottom: 40px;">
-                        <h3 style="color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #667292; font-size: 1.3rem;">📉 Ausgaben</h3>
+                        <h3 style="color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #d4af37; font-size: 1.3rem;">📉 Ausgaben</h3>
                         
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #667292; margin-bottom: 10px; font-size: 1.1rem;">Gebäude</h4>
+                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Gebäude</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Gebäudemiete
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Nebenkosten (Strom, Müll)
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Nebenkosten Vermietung 1. OG
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Instandhaltung Räume
+                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    Miete, Nebenkosten, Instandhaltung
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #667292; margin-bottom: 10px; font-size: 1.1rem;">Personal</h4>
+                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Personal</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Löhne und Gehälter
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Übungsleiter-Freibetrag
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Anteil Sozialversicherung
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Reise- und Übernachtungskosten
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Fortbildungskosten
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Sonstige Personalaufwendungen
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Honorare Aufwand
+                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    Löhne, Gehälter, Sozialversicherung, Reisekosten
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #667292; margin-bottom: 10px; font-size: 1.1rem;">Mission</h4>
+                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Mission</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Missionsprojekte
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Missionarische Unterstützung
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Zweckgebundene Missionsausgaben
+                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    Missionsprojekte und Unterstützung
                                 </li>
                             </ul>
                         </div>
 
                         <div style="margin-bottom: 30px;">
-                            <h4 style="color: #667292; margin-bottom: 10px; font-size: 1.1rem;">Sonstige Ausgaben</h4>
+                            <h4 style="color: #d4af37; margin-bottom: 10px; font-size: 1.1rem;">Sonstige</h4>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Kinder- u. Jugendarbeit allgem. Aufwand
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Jugend-Veranstaltungen Ausgaben
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Evangelisation
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Allgemeine Bürokosten
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Porto
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Telefon
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Fachliteratur
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Abos
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Druckaufträge/Flyer
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Fahrtkosten MA intern
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Reinigung, Verbrauchsmaterial
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Getränke-Lebensmittel-Gastfreundschaft
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Bewirtungskosten
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Bastel-/Dekomaterial
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Geschenke
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Fahrtkosten extern (von Besuchern)
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    EDV-Kosten
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Werbung / PR
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Anschaffungen
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Reparaturen/Instandhaltung
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Technik/Video
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Periodenfremde Aufwendungen
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Versicherungen
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Abgaben an foursquare
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Gebühren
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Medien Ausgaben
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    FSQ Regio SW Veranstaltungen Ausgaben
-                                </li>
-                                <li style="padding: 6px 0 6px 20px; color: #555; position: relative; line-height: 1.6;">
-                                    <span style="position: absolute; left: 0; color: #667292; font-weight: bold; font-size: 1.2rem;">•</span>
-                                    Gemeindefreizeit Ausgaben
+                                    <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">•</span>
+                                    Büro, Technik, Veranstaltungen, etc.
                                 </li>
                             </ul>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 0;">
-                        <h3 style="color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #667292; font-size: 1.3rem;">ℹ️ Zusammenfassung</h3>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667292;">
-                            <p style="margin-bottom: 10px; color: #555; line-height: 1.6;"><strong>Einnahmen:</strong> Alle Einnahmen werden in die drei Hauptkategorien Spenden, Mission und Sonstige gruppiert.</p>
-                            <p style="margin-bottom: 10px; color: #555; line-height: 1.6;"><strong>Ausgaben:</strong> Alle Ausgaben werden in die vier Hauptkategorien Gebäude, Personal, Mission und Sonstige gruppiert.</p>
-                            <p style="margin: 0; color: #555; line-height: 1.6;"><strong>Dashboard-Ansicht:</strong> Im Dashboard sehen Sie nur die Summen dieser Hauptkategorien, um eine übersichtliche Darstellung zu gewährleisten.</p>
                         </div>
                     </div>
                 </div>
@@ -896,6 +689,7 @@
 
         let quarterData = [];
         let quartalsziele = {};
+        let jahresuebersicht = {};
 
         window.addEventListener('DOMContentLoaded', checkExistingToken);
 
@@ -1004,9 +798,10 @@
 
                 quarterData = data.quartale || [];
                 quartalsziele = data.quartalsziele || { quartalsbedarf: 75000, visionsbetrag: 81000 };
+                jahresuebersicht = data.jahresuebersicht || { kumuliertes_ergebnis: 0, gesamteinnahmen: 0, gesamtausgaben: 0 };
 
-                updateYearSummary(data.jahresuebersicht);
-                renderQuarterCards();
+                updateYearOverview();
+                renderQuarters();
 
                 document.getElementById('loadingIndicator').style.display = 'none';
                 document.getElementById('contentContainer').style.display = 'block';
@@ -1049,208 +844,53 @@
             return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
-        function updateYearSummary(jahresuebersicht) {
-            if (jahresuebersicht) {
-                const ergebnis = parseNumber(jahresuebersicht.kumuliertes_ergebnis);
-                document.getElementById('yearResult').textContent = formatCurrency(ergebnis);
-                document.getElementById('yearResult').className = 'value ' + (ergebnis >= 0 ? 'positive' : 'negative');
-                document.getElementById('yearIncome').textContent = formatCurrency(jahresuebersicht.gesamteinnahmen);
-                document.getElementById('yearExpenses').textContent = formatCurrency(jahresuebersicht.gesamtausgaben);
-            }
+        function updateYearOverview() {
+            const ergebnis = parseNumber(jahresuebersicht.kumuliertes_ergebnis);
+            document.getElementById('yearResult').textContent = formatCurrency(ergebnis);
+            document.getElementById('yearResult').className = 'year-stat-value ' + (ergebnis >= 0 ? 'positive' : 'negative');
+            document.getElementById('yearIncome').textContent = formatCurrency(jahresuebersicht.gesamteinnahmen);
+            document.getElementById('yearExpenses').textContent = formatCurrency(jahresuebersicht.gesamtausgaben);
         }
 
-        function renderQuarterCards() {
-            const container = document.getElementById('quartersContainer');
+        function renderQuarters() {
+            const container = document.getElementById('quartersGrid');
             container.innerHTML = '';
 
-            const quarterNames = ['1. Quartal', '2. Quartal', '3. Quartal', '4. Quartal'];
+            const quarterNames = ['1. quartal', '2. quartal', '3. quartal', '4. quartal'];
 
             for (let i = 0; i < 4; i++) {
                 const quarter = quarterData.find(q => q.quartal === i + 1);
                 const card = document.createElement('div');
                 card.className = 'quarter-card';
-                card.id = `quarter-${i}`;
                 
                 if (quarter) {
                     const ueberschuss = parseNumber(quarter.ueberschuss);
-                    
-                    const einnahmenSpenden = parseNumber(quarter.spenden_aktuell || 0);
-                    const einnahmenSpendenVorjahr = parseNumber(quarter.spenden_vorjahr || 0);
-                    const einnahmenMission = parseNumber(quarter.mission_einnahmen_aktuell || quarter.mission_aktuell || 0);
-                    const einnahmenMissionVorjahr = parseNumber(quarter.mission_einnahmen_vorjahr || quarter.mission_vorjahr || 0);
-                    const einnahmenSonstige = parseNumber(quarter.sonstige_einnahmen_aktuell || quarter.sonstige_aktuell || 0);
-                    const einnahmenSonstigeVorjahr = parseNumber(quarter.sonstige_einnahmen_vorjahr || quarter.sonstige_vorjahr || 0);
-                    const einnahmenGesamt = parseNumber(quarter.gesamt_einnahmen_aktuell || quarter.gesamt_aktuell || 0);
-                    const einnahmenGesamtVorjahr = parseNumber(quarter.gesamt_einnahmen_vorjahr || quarter.gesamt_vorjahr || 0);
-                    
-                    const ausgabenGebaeude = parseNumber(quarter.gebaeude_aktuell || 0);
-                    const ausgabenGebaeudeVorjahr = parseNumber(quarter.gebaeude_vorjahr || 0);
-                    const ausgabenPersonal = parseNumber(quarter.personal_aktuell || 0);
-                    const ausgabenPersonalVorjahr = parseNumber(quarter.personal_vorjahr || 0);
-                    const ausgabenMission = parseNumber(quarter.mission_ausgaben_aktuell || 0);
-                    const ausgabenMissionVorjahr = parseNumber(quarter.mission_ausgaben_vorjahr || 0);
-                    const ausgabenSonstige = parseNumber(quarter.sonstige_ausgaben_aktuell || 0);
-                    const ausgabenSonstigeVorjahr = parseNumber(quarter.sonstige_ausgaben_vorjahr || 0);
-                    const ausgabenGesamt = parseNumber(quarter.gesamt_ausgaben_aktuell || 0);
-                    const ausgabenGesamtVorjahr = parseNumber(quarter.gesamt_ausgaben_vorjahr || 0);
-                    
                     const quarterlyGoalAchieved = ueberschuss >= parseNumber(quartalsziele.quartalsbedarf);
                     const visionGoalAchieved = ueberschuss >= parseNumber(quartalsziele.visionsbetrag);
-                    const periodText = `${formatDate(quarter.period_start)} - ${formatDate(quarter.period_end)}`;
 
                     card.innerHTML = `
-                        <div class="card-front">
-                            <div class="quarter-header">
-                                <div class="quarter-title">${quarterNames[i]}</div>
-                                <div class="quarter-period">${periodText}</div>
+                        <div class="quarter-number">${quarterNames[i]}</div>
+                        <div class="quarter-status">
+                            <div class="status-item ${quarterlyGoalAchieved ? 'status-achieved' : 'status-not-achieved'}">
+                                ${quarterlyGoalAchieved ? 'Quartalsbedarf erreicht' : 'Quartalsbedarf erreicht'}
                             </div>
-                            <div class="quarter-overview">
-                                <div class="quarter-result ${ueberschuss >= 0 ? 'positive' : 'negative'}">
-                                    ${formatCurrency(ueberschuss)}
-                                </div>
-                                <div class="goals">
-                                    <div class="goal ${quarterlyGoalAchieved ? 'achieved' : 'not-achieved'}">
-                                        <div>
-                                            <div class="goal-label">Quartalsbedarf erreicht</div>
-                                            <div class="goal-amount">${formatCurrency(quartalsziele.quartalsbedarf)} benötigt</div>
-                                        </div>
-                                        <span class="goal-status ${quarterlyGoalAchieved ? 'achieved' : 'not-achieved'}">
-                                            ${quarterlyGoalAchieved ? '✓ Erreicht' : '✗ Nicht erreicht'}
-                                        </span>
-                                    </div>
-                                    <div class="goal ${visionGoalAchieved ? 'achieved' : 'not-achieved'}">
-                                        <div>
-                                            <div class="goal-label">Vision erreicht</div>
-                                            <div class="goal-amount">${formatCurrency(quartalsziele.visionsbetrag)} Vision</div>
-                                        </div>
-                                        <span class="goal-status ${visionGoalAchieved ? 'achieved' : 'not-achieved'}">
-                                            ${visionGoalAchieved ? '✓ Erreicht' : '✗ Nicht erreicht'}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="click-hint">Klicken für Details</div>
-                        </div>
-                        <div class="card-back">
-                            <button class="back-btn" onclick="event.stopPropagation(); toggleCard(${i})">← Zurück zur Übersicht</button>
-                            
-                            <div class="quarter-header">
-                                <div class="quarter-title">${quarterNames[i]} - Detailansicht</div>
-                                <div class="quarter-period">${periodText}</div>
-                            </div>
-
-                            <div class="details-section">
-                                <h4>📈 Einnahmen</h4>
-                                <table class="details-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Kategorie</th>
-                                            <th>Aktuell</th>
-                                            <th>Vorjahr</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Spenden</td>
-                                            <td>${formatCurrency(einnahmenSpenden)}</td>
-                                            <td>${formatCurrency(einnahmenSpendenVorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Mission</td>
-                                            <td>${formatCurrency(einnahmenMission)}</td>
-                                            <td>${formatCurrency(einnahmenMissionVorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Sonstige</td>
-                                            <td>${formatCurrency(einnahmenSonstige)}</td>
-                                            <td>${formatCurrency(einnahmenSonstigeVorjahr)}</td>
-                                        </tr>
-                                        <tr class="total-row">
-                                            <td>Gesamt Einnahmen</td>
-                                            <td>${formatCurrency(einnahmenGesamt)}</td>
-                                            <td>${formatCurrency(einnahmenGesamtVorjahr)}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="details-section">
-                                <h4>📉 Ausgaben</h4>
-                                <table class="details-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Kategorie</th>
-                                            <th>Aktuell</th>
-                                            <th>Vorjahr</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Gebäude</td>
-                                            <td>${formatCurrency(ausgabenGebaeude)}</td>
-                                            <td>${formatCurrency(ausgabenGebaeudeVorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Personal</td>
-                                            <td>${formatCurrency(ausgabenPersonal)}</td>
-                                            <td>${formatCurrency(ausgabenPersonalVorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Mission</td>
-                                            <td>${formatCurrency(ausgabenMission)}</td>
-                                            <td>${formatCurrency(ausgabenMissionVorjahr)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Sonstige</td>
-                                            <td>${formatCurrency(ausgabenSonstige)}</td>
-                                            <td>${formatCurrency(ausgabenSonstigeVorjahr)}</td>
-                                        </tr>
-                                        <tr class="total-row">
-                                            <td>Gesamt Ausgaben</td>
-                                            <td>${formatCurrency(ausgabenGesamt)}</td>
-                                            <td>${formatCurrency(ausgabenGesamtVorjahr)}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="details-section">
-                                <h4>💰 Ergebnis</h4>
-                                <table class="details-table">
-                                    <tbody>
-                                        <tr>
-                                            <td>Einnahmen</td>
-                                            <td>${formatCurrency(einnahmenGesamt)}</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Ausgaben</td>
-                                            <td>${formatCurrency(ausgabenGesamt)}</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr class="total-row">
-                                            <td>Quartalsüberschuss/-defizit</td>
-                                            <td class="${ueberschuss >= 0 ? 'positive' : 'negative'}">
-                                                ${formatCurrency(ueberschuss)}
-                                            </td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="status-item ${visionGoalAchieved ? 'status-achieved' : 'status-not-achieved'}">
+                                ${visionGoalAchieved ? 'Visionsbedarf erreicht' : 'Visionsbedarf erreicht'}
                             </div>
                         </div>
+                        <div class="quarter-result-label">Ergebnis</div>
+                        <div class="quarter-result-value ${ueberschuss >= 0 ? 'positive' : 'negative'}">
+                            ${formatCurrency(ueberschuss)}
+                        </div>
+                        <div class="quarter-hint">Klicke für details</div>
                     `;
                     
-                    card.onclick = function() { toggleCard(i); };
+                    card.onclick = () => openQuarterModal(i + 1);
                 } else {
                     card.innerHTML = `
-                        <div class="card-front">
-                            <div class="quarter-header">
-                                <div class="quarter-title">${quarterNames[i]}</div>
-                            </div>
-                            <div style="text-align: center; color: #999; padding: 20px;">
-                                Noch keine Daten verfügbar
-                            </div>
+                        <div class="quarter-number">${quarterNames[i]}</div>
+                        <div style="text-align: center; color: rgba(0,0,0,0.5); padding: 20px; font-style: italic;">
+                            Noch keine Daten verfügbar
                         </div>
                     `;
                     card.style.cursor = 'default';
@@ -1261,25 +901,250 @@
             }
         }
 
-        function toggleCard(index) {
-            const card = document.getElementById(`quarter-${index}`);
-            if (card) {
-                card.classList.toggle('detailed');
-            }
+        function openYearModal() {
+            const modal = document.getElementById('yearModal');
+            const body = document.getElementById('yearModalBody');
+            
+            // Berechne aggregierte Daten
+            let spendenGesamt = 0, missionEinnahmenGesamt = 0, sonstigeEinnahmenGesamt = 0;
+            let gebaeudeGesamt = 0, personalGesamt = 0, missionAusgabenGesamt = 0, sonstigeAusgabenGesamt = 0;
+            
+            quarterData.forEach(q => {
+                spendenGesamt += parseNumber(q.spenden_aktuell);
+                missionEinnahmenGesamt += parseNumber(q.mission_einnahmen_aktuell);
+                sonstigeEinnahmenGesamt += parseNumber(q.sonstige_einnahmen_aktuell);
+                gebaeudeGesamt += parseNumber(q.gebaeude_aktuell);
+                personalGesamt += parseNumber(q.personal_aktuell);
+                missionAusgabenGesamt += parseNumber(q.mission_ausgaben_aktuell);
+                sonstigeAusgabenGesamt += parseNumber(q.sonstige_ausgaben_aktuell);
+            });
+            
+            body.innerHTML = `
+                <div class="details-section">
+                    <h3>📈 Einnahmen - Jahresgesamt</h3>
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Kategorie</th>
+                                <th>Betrag</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Spenden</td>
+                                <td>${formatCurrency(spendenGesamt)}</td>
+                            </tr>
+                            <tr>
+                                <td>Mission</td>
+                                <td>${formatCurrency(missionEinnahmenGesamt)}</td>
+                            </tr>
+                            <tr>
+                                <td>Sonstige</td>
+                                <td>${formatCurrency(sonstigeEinnahmenGesamt)}</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>Gesamt Einnahmen</td>
+                                <td>${formatCurrency(jahresuebersicht.gesamteinnahmen)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="details-section">
+                    <h3>📉 Ausgaben - Jahresgesamt</h3>
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Kategorie</th>
+                                <th>Betrag</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Gebäude</td>
+                                <td>${formatCurrency(gebaeudeGesamt)}</td>
+                            </tr>
+                            <tr>
+                                <td>Personal</td>
+                                <td>${formatCurrency(personalGesamt)}</td>
+                            </tr>
+                            <tr>
+                                <td>Mission</td>
+                                <td>${formatCurrency(missionAusgabenGesamt)}</td>
+                            </tr>
+                            <tr>
+                                <td>Sonstige</td>
+                                <td>${formatCurrency(sonstigeAusgabenGesamt)}</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>Gesamt Ausgaben</td>
+                                <td>${formatCurrency(jahresuebersicht.gesamtausgaben)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="details-section">
+                    <h3>💰 Jahresergebnis</h3>
+                    <table class="details-table">
+                        <tbody>
+                            <tr class="total-row">
+                                <td>Kumuliertes Ergebnis 2025</td>
+                                <td class="${parseNumber(jahresuebersicht.kumuliertes_ergebnis) >= 0 ? 'positive' : 'negative'}">
+                                    ${formatCurrency(jahresuebersicht.kumuliertes_ergebnis)}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
         }
 
-        function openModal() {
-            document.getElementById('explanationModal').style.display = 'block';
+        function closeYearModal() {
+            document.getElementById('yearModal').style.display = 'none';
         }
 
-        function closeModal() {
-            document.getElementById('explanationModal').style.display = 'none';
+        function openQuarterModal(quartalNr) {
+            const quarter = quarterData.find(q => q.quartal === quartalNr);
+            if (!quarter) return;
+
+            const modal = document.getElementById('quarterModal');
+            const title = document.getElementById('quarterModalTitle');
+            const body = document.getElementById('quarterModalBody');
+
+            const quarterNames = ['Erstes', 'Zweites', 'Drittes', 'Viertes'];
+            title.textContent = `${quarterNames[quartalNr - 1]} Quartal ${quarter.jahr} - Details`;
+
+            const ueberschuss = parseNumber(quarter.ueberschuss);
+            const periodText = `${formatDate(quarter.period_start)} - ${formatDate(quarter.period_end)}`;
+
+            body.innerHTML = `
+                <div style="text-align: center; margin-bottom: 30px; color: #666;">
+                    <strong>Zeitraum:</strong> ${periodText}
+                </div>
+
+                <div class="details-section">
+                    <h3>📈 Einnahmen</h3>
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Kategorie</th>
+                                <th>Aktuell</th>
+                                <th>Vorjahr</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Spenden</td>
+                                <td>${formatCurrency(quarter.spenden_aktuell)}</td>
+                                <td>${formatCurrency(quarter.spenden_vorjahr)}</td>
+                            </tr>
+                            <tr>
+                                <td>Mission</td>
+                                <td>${formatCurrency(quarter.mission_einnahmen_aktuell)}</td>
+                                <td>${formatCurrency(quarter.mission_einnahmen_vorjahr)}</td>
+                            </tr>
+                            <tr>
+                                <td>Sonstige</td>
+                                <td>${formatCurrency(quarter.sonstige_einnahmen_aktuell)}</td>
+                                <td>${formatCurrency(quarter.sonstige_einnahmen_vorjahr)}</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>Gesamt Einnahmen</td>
+                                <td>${formatCurrency(quarter.gesamt_einnahmen_aktuell)}</td>
+                                <td>${formatCurrency(quarter.gesamt_einnahmen_vorjahr)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="details-section">
+                    <h3>📉 Ausgaben</h3>
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Kategorie</th>
+                                <th>Aktuell</th>
+                                <th>Vorjahr</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Gebäude</td>
+                                <td>${formatCurrency(quarter.gebaeude_aktuell)}</td>
+                                <td>${formatCurrency(quarter.gebaeude_vorjahr)}</td>
+                            </tr>
+                            <tr>
+                                <td>Personal</td>
+                                <td>${formatCurrency(quarter.personal_aktuell)}</td>
+                                <td>${formatCurrency(quarter.personal_vorjahr)}</td>
+                            </tr>
+                            <tr>
+                                <td>Mission</td>
+                                <td>${formatCurrency(quarter.mission_ausgaben_aktuell)}</td>
+                                <td>${formatCurrency(quarter.mission_ausgaben_vorjahr)}</td>
+                            </tr>
+                            <tr>
+                                <td>Sonstige</td>
+                                <td>${formatCurrency(quarter.sonstige_ausgaben_aktuell)}</td>
+                                <td>${formatCurrency(quarter.sonstige_ausgaben_vorjahr)}</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>Gesamt Ausgaben</td>
+                                <td>${formatCurrency(quarter.gesamt_ausgaben_aktuell)}</td>
+                                <td>${formatCurrency(quarter.gesamt_ausgaben_vorjahr)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="details-section">
+                    <h3>💰 Quartalsüberschuss/-defizit</h3>
+                    <table class="details-table">
+                        <tbody>
+                            <tr class="total-row">
+                                <td>Ergebnis</td>
+                                <td class="${ueberschuss >= 0 ? 'positive' : 'negative'}">
+                                    ${formatCurrency(ueberschuss)}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            modal.style.display = 'block';
         }
 
+        function closeQuarterModal() {
+            document.getElementById('quarterModal').style.display = 'none';
+        }
+
+        function openInfoModal() {
+            document.getElementById('infoModal').style.display = 'block';
+        }
+
+        function closeInfoModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        // Modal schließen beim Klick außerhalb
         window.onclick = function(event) {
-            const modal = document.getElementById('explanationModal');
-            if (event.target === modal) {
-                closeModal();
+            const yearModal = document.getElementById('yearModal');
+            const quarterModal = document.getElementById('quarterModal');
+            const infoModal = document.getElementById('infoModal');
+            
+            if (event.target === yearModal) {
+                closeYearModal();
+            }
+            if (event.target === quarterModal) {
+                closeQuarterModal();
+            }
+            if (event.target === infoModal) {
+                closeInfoModal();
             }
         }
     </script>
