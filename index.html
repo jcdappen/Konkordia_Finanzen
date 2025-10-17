@@ -1002,19 +1002,17 @@
                     <table class="details-table">
                         <thead>
                             <tr>
-                                <th>Jahr</th>
-                                <th>Ergebnis</th>
+                                <th>Kategorie</th>
+                                <th>2025</th>
+                                <th>Vorjahr</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="total-row">
-                                <td>2025</td>
+                                <td>Kumuliertes Ergebnis</td>
                                 <td class="${parseNumber(jahresuebersicht.kumuliertes_ergebnis) >= 0 ? 'positive' : 'negative'}">
                                     ${formatCurrency(jahresuebersicht.kumuliertes_ergebnis)}
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>Vorjahr</td>
                                 <td class="${parseNumber(jahresuebersicht.kumuliertes_ergebnis_vorjahr) >= 0 ? 'positive' : 'negative'}">
                                     ${formatCurrency(jahresuebersicht.kumuliertes_ergebnis_vorjahr)}
                                 </td>
@@ -1128,13 +1126,22 @@
                 <div class="details-section">
                     <h3>💰 Quartalsüberschuss/-defizit</h3>
                     <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Kategorie</th>
+                                <th>Aktuell</th>
+                                <th>Vorjahr</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr class="total-row">
                                 <td>Ergebnis</td>
                                 <td class="${ueberschuss >= 0 ? 'positive' : 'negative'}">
                                     ${formatCurrency(ueberschuss)}
                                 </td>
-                                <td></td>
+                                <td class="${(parseNumber(quarter.gesamt_einnahmen_vorjahr) - parseNumber(quarter.gesamt_ausgaben_vorjahr)) >= 0 ? 'positive' : 'negative'}">
+                                    ${formatCurrency(parseNumber(quarter.gesamt_einnahmen_vorjahr) - parseNumber(quarter.gesamt_ausgaben_vorjahr))}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
